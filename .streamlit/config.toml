@@ -1,0 +1,31 @@
+# Rare Disease Atlas theme. Read by `streamlit run` from the repository root.
+# Calm medical-but-modern: bright warm-white light mode, deep teal-ink dark mode, one teal accent.
+# These values are mirrored in app/theme.py PALETTES (used by the in-app Auto/Light/Dark toggle and by
+# every custom colour: node types, evidence types, chips, banners, the graph canvas).
+
+[theme]
+primaryColor = "#0F766E"
+showWidgetBorder = true
+baseRadius = "0.6rem"
+
+[theme.light]
+primaryColor = "#0F766E"
+backgroundColor = "#FFFCF7"
+secondaryBackgroundColor = "#F7F2EA"
+textColor = "#16282B"
+linkColor = "#0B5F8F"
+borderColor = "#D9CFBF"
+
+[theme.dark]
+primaryColor = "#2DD4BF"
+backgroundColor = "#0A1A1E"
+secondaryBackgroundColor = "#112429"
+textColor = "#E7F2F0"
+linkColor = "#7CC4F0"
+borderColor = "#2B4851"
+
+[client]
+toolbarMode = "minimal"
+
+[server]
+headless = true

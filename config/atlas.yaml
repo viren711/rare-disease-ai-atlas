@@ -1,0 +1,47 @@
+# Rare Disease Atlas configuration. Paths are relative to the repo root.
+
+groups:
+  lysosomal:
+    label: Lysosomal storage diseases
+    mondo_root: MONDO:0002561
+    pubmed_slice: lysosomal
+  peroxisomal:
+    label: Peroxisomal diseases
+    mondo_root: MONDO:0019053
+    pubmed_slice: peroxisomal
+# Bridge concept shown in the UI: crosses both groups by phenotype, not by name.
+bridge_roots:
+  leukodystrophy: MONDO:0019046
+
+paths:
+  raw: data/raw
+  graph: data/graph          # nodes.parquet, edges.parquet, clusters.parquet, synonyms.parquet
+  index: artifacts/index     # FAISS + BM25 over abstracts
+  orgs_seed: config/patient_orgs.csv
+
+graph:
+  # disease~disease similarity = weighted sum of the components below (each in [0,1])
+  sim_weights: {phenotype: 0.5, pathway: 0.3, literature: 0.2}
+  min_similarity: 0.15       # below this no 'similar_to' edge is written
+  top_k_neighbours: 10
+  # a phenotype is "informative" when its IC (-log annotation frequency over ALL HPO diseases) is above this
+  informative_ic: 4.0
+  # Reactome pathways annotated to more than this many genes are too generic to count as a shared mechanism
+  max_pathway_genes: 300
+  # researcher must have >= this many papers on each of two diseases to count as a bridge
+  min_papers_per_disease: 2
+
+retrieval:
+  embedding_model: BAAI/bge-small-en-v1.5
+  reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2
+  dense_k: 50
+  bm25_k: 50
+  rerank_candidates: 15
+  top_k: 5
+  min_rerank_score: 1.18  # calibrated by scripts/eval_ask.py
+  max_seq_length: 320
+
+llm:
+  base_url: http://127.0.0.1:8080/v1
+  model: qwen2.5-3b
+  max_answer_words: 300

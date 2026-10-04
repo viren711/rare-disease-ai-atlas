@@ -1,0 +1,13 @@
+# Plans/cards used by scripts/eval_plain.py. kind: plan | disease | edge. Ids from data/graph (MONDO ids).
+cases:
+  - {name: supported_gene_pathway, kind: plan, a: "MONDO:0009499", b: "MONDO:0009590", level: family}
+  - {name: supported_scientist,    kind: plan, a: "MONDO:0009499", b: "MONDO:0009590", level: scientist}
+  - {name: weak_cross_group,       kind: plan, a: "MONDO:0018544", b: "MONDO:0016091", level: family}
+  - {name: gap_no_neighbour,       kind: plan, a: "MONDO:0019609", level: family}
+  - {name: gap_forced_pair,        kind: plan, a: "MONDO:0010526", b: "MONDO:0019609", level: family}
+  - {name: sparse_no_orgs,         kind: plan, a: "MONDO:0009919", b: "MONDO:0030073", level: family}
+  - {name: low_similarity_pair,    kind: plan, a: "MONDO:0018150", b: "MONDO:0100464", level: family}
+  - {name: sibling_types,          kind: plan, a: "MONDO:0009756", b: "MONDO:0011871", level: family}
+  - {name: disease_card_rich,      kind: disease, a: "MONDO:0009499", level: family}
+  - {name: disease_card_sparse,    kind: disease, a: "MONDO:0009290", level: family}
+  - {name: edge_gene,              kind: edge, edge_from_plan: "MONDO:0009499", level: family}

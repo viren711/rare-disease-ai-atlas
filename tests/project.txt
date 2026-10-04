@@ -1,0 +1,78 @@
+RARE DISEASE ATLAS
+==================
+Hackathon: 7th Global AI Hackathon, Challenge 05 (OpenAI x Buffalo Initiative x Hack-Nation)
+
+THE PROBLEM
+-----------
+A family learns their child has a rare genetic disease with no approved treatment. They become the organiser
+of a research effort they never expected to lead. The knowledge they need is scattered across papers, disease
+databases, trial registries, grant databases and patient organisations. Groups rebuild registries and study
+designs that another community already has, because diseases are filed by NAME, while research can be shared
+by MECHANISM and SYMPTOM PATTERN.
+
+THE SOLUTION
+------------
+One search box that opens a map of connected evidence. From a disease the atlas finds:
+  - WHO SHARES OUR DISEASE CHARACTERISTICS   related diseases by symptoms, pathway and literature
+  - WHAT USEFUL WORK ALREADY EXISTS          trials, registries, natural history studies, grants, variants
+  - WHAT TO DO TOGETHER NEXT                 collaborators, patient groups, a sourced proposal, next steps
+Every connection shows its source, date, confidence and any contradicting evidence. When nothing supported
+exists, it says so, lists what was searched, and names the next question to test.
+
+HOW IT WORKS (WORKFLOW)
+-----------------------
+1. COLLECT  Public sources, downloaded in parallel and resumable:
+            MONDO, HPO, Orphanet, Reactome (biology) - PubMed + PubTator3 (26,026 abstracts) -
+            ClinicalTrials.gov (1,303 studies) - NIH RePORTER (1,779 grants) - ClinVar (variants) -
+            patient organisation list with checked websites.
+2. RESOLVE  One stable ID per disease/gene/symptom (MONDO, HGNC, HPO). Synonyms map to the same node, so
+            "globoid cell leukodystrophy", "GALC deficiency" and "Krabbe" all find the same disease.
+3. CONNECT  ~61k nodes and ~207k edges. Each edge records source, date, confidence and an evidence type:
+            database record (solid) / found in papers (dashed) / inferred by the atlas (dotted).
+4. CLUSTER  Diseases are scored on shared symptoms (rare symptoms count more), shared pathways and papers
+            that mention both, then grouped. Related diseases come from mechanism, not name.
+5. CHECK    Each link gets a confidence breakdown and a stance (supported / mixed / weak / unsupported),
+            with possible counter-evidence: stopped trials and why, retracted or negative papers,
+            disagreeing databases.
+6. ACT      The action plan chains the evidence between two diseases, lists shared assets, researchers who
+            work on both, patient groups, funding and funding gaps, what differs and must be checked, a
+            readiness level, next steps, and a proposal text to send to a partner.
+7. EXPLAIN  A local language model rewrites the plan in plain language; every sentence keeps its citation and
+            is verified against the facts, with a template fallback.
+8. ASK      Natural-language questions over the abstracts get a cited answer, or a clear refusal when the
+            literature does not support one.
+
+DEMO JOURNEY
+------------
+Krabbe disease -> X-linked adrenoleukodystrophy (different disease families, shared neurological symptoms,
+NO shared gene or pathway - the atlas says so) -> 17 shared trials/registries/natural history studies ->
+over 100 researchers who published on both -> two leukodystrophy patient groups serving both -> readiness
+"moderate" with the differences to check -> a sourced proposal. A sparse disease instead returns an honest
+gap report.
+
+WHAT MAKES IT TRUSTWORTHY
+-------------------------
+- Observations are separated from hypotheses (line style and labels everywhere).
+- Every sentence in an explanation cites an edge; invented terms are rejected.
+- Contradictions and gaps are shown beside the connection they affect.
+- Off-topic or unsupported questions are refused, not guessed.
+
+RUNS ANYWHERE
+-------------
+CPU-only laptop, no keys, no cloud: Streamlit UI + in-memory graph + local 4-bit Qwen2.5-3B.
+Start with ./start. Light and dark themes.
+
+LIMITS (HONEST)
+---------------
+Two disease groups only. Researcher identity is name-based without ORCID. Counter-evidence flags are
+automated heuristics. Funding gaps cover NIH only. Leads are for researchers and doctors to check;
+they are not medical advice.
+
+10x CLAIM (to validate)
+-----------------------
+Milestone: launching a shared natural history study. Today a group builds one from scratch (typically years
+of protocol design, registry setup and recruitment). With the atlas it finds an existing registry/study
+design for a mechanistically similar disease, the researchers who ran it, the patient group that recruited,
+and the differences to review, so the group adapts instead of rebuilding. Assumptions to test: the reused
+design needs expert review for eligibility and endpoints; recruitment is the slowest step and is shortened
+only if the partner community shares its network.

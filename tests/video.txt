@@ -1,0 +1,53 @@
+PRODUCT VIDEO PROMPT: RARE DISEASE ATLAS
+=========================================
+Make a 1-minute explainer video. It covers only the problem, the solution and the technology. It does not include a product demo.
+Style: simple, calm, clean motion graphics on a dark teal and warm white background. Voice-over with burned-in captions.
+Do not show real patients or faces. Use only the on-screen text written below.
+
+SCENE 1: The problem
+--------------------
+Show: a family looking at a diagnosis, then the numbers below appearing one by one.
+Text: "10,000 rare diseases", "80% are genetic", "350 million people", "Fewer than 5% have an approved treatment"
+Say: "A child is diagnosed with a rare disease. The family learns the name of a gene, and nothing about what to do next.
+There are about ten thousand rare diseases, and fewer than five percent have an approved treatment."
+
+SCENE 2: Why it is hard
+-----------------------
+Show: papers, trials, grants, gene databases and patient groups as separate, unconnected icons.
+Text: "Knowledge is scattered", "Diseases are filed by name, not by mechanism", "Groups rebuild what already exists"
+Say: "The knowledge exists, but it is spread across papers, trials, grants, databases and patient groups. Diseases are filed
+by name, so two diseases that share a mechanism look unrelated, and communities end up rebuilding registries and studies that
+another group already has."
+
+SCENE 3: The solution
+---------------------
+Show: the separate icons connecting into one graph, then the project name.
+Text: "Rare Disease Atlas", "A knowledge graph of rare diseases with the evidence behind every link"
+Say: "The Rare Disease Atlas brings these sources into one knowledge graph. It links diseases by shared mechanism and
+symptoms, shows the source and confidence of every connection, and turns a connection into a next step: a shared study, a
+researcher, a patient group. When there is no supported link, it says so."
+
+SCENE 4: What it provides
+-------------------------
+Show: four short labels appearing in turn.
+Text: "Related diseases", "Research assets", "Collaborators", "Next steps and plain-language explanations"
+Say: "For any disease it finds related diseases, existing trials and registries, funding, researchers and patient groups, and
+explains the result in plain language, with every statement cited."
+
+SCENE 5: The technology
+-----------------------
+Show: a simple left-to-right diagram: sources, graph, local model, app. Under it, a short list of the technologies.
+Text: "10 public sources: MONDO, HPO, Orphanet, Reactome, ClinVar, PubMed, PubTator, ClinicalTrials.gov, NIH RePORTER",
+"60,869 nodes, 207,211 edges", "Parquet and NetworkX", "Embeddings, BM25, FAISS, cross-encoder reranker",
+"Qwen2.5-3B on llama.cpp", "Streamlit", "Runs on a laptop CPU, offline"
+Say: "It is built from ten public sources into a graph of about sixty thousand nodes and two hundred thousand edges. Each edge
+is marked as a database record, found in papers, or computed by the atlas. Questions are answered with search and a local
+language model, and every answer is checked against its sources. It runs entirely on a laptop, with no GPU and no cloud."
+
+SCENE 6: Close
+--------------
+Show: the logo on a plain background.
+Text: "From an isolated diagnosis to a shared path toward treatment."
+Say: "From an isolated diagnosis, to a shared path toward treatment."
+
+MUSIC: soft, minimal, no vocals, quiet under the voice.

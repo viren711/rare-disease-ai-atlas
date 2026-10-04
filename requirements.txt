@@ -1,0 +1,29 @@
+# Rare Disease Atlas -- versions verified on Ubuntu 24.04, Python 3.12, CPU only (no GPU).
+#
+#   python3 -m venv .venv && . .venv/bin/activate
+#   pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+#
+# torch is the CPU wheel on purpose: the default CUDA build pulls ~2.5 GB of unusable libraries.
+# The language model is NOT a Python package: scripts/00_fetch_models.sh downloads a prebuilt
+# llama.cpp llama-server binary and GGUF weights.
+
+# --- Graph build and API -----------------------------------------------------
+pandas==3.0.6
+pyarrow==25.0.1
+networkx==3.6.1
+numpy==2.5.3
+scikit-learn==1.9.1
+PyYAML==6.0.3
+
+# --- Literature search (embeddings, hybrid retrieval, reranking) --------------
+torch==2.14.0
+transformers==5.17.0
+sentence-transformers==6.0.1
+faiss-cpu==1.15.0
+rank-bm25==0.2.2
+
+# --- User interface --------------------------------------------------------------
+streamlit==1.63.0
+streamlit-agraph==0.0.45
+openpyxl==3.1.5

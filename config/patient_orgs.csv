@@ -1,0 +1,34 @@
+id,name,url,disease_mondo_ids,source,verified
+ORG:national-mps-society,National MPS Society,https://mpssociety.org/en,MONDO:0019249;MONDO:0019248,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:mps-society-uk,MPS Society (UK),https://mpssociety.org.uk,MONDO:0019249;MONDO:0019248,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:national-gaucher-foundation,National Gaucher Foundation,https://www.gaucherdisease.org,MONDO:0018150,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:gaucher-association-uk,Gaucher Association (UK),https://www.gaucher.org.uk,MONDO:0018150,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:european-gaucher-alliance,European Gaucher Alliance,https://www.eurogaucher.org,MONDO:0018150,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:fsig,Fabry Support & Information Group,https://www.fabry.org,MONDO:0010526,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:national-fabry-disease-foundation,National Fabry Disease Foundation,https://www.fabrydisease.org,MONDO:0010526,curated seed; HTTP GET 307 on 2026-10-04,false
+ORG:fabry-international-network,Fabry International Network,https://www.fabrynetwork.org,MONDO:0010526,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:nnpdf,National Niemann-Pick Disease Foundation,https://nnpdf.org,MONDO:0001982;MONDO:0018982;MONDO:0009756;MONDO:0011871,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ara-parseghian,Ara Parseghian Medical Research Fund,https://parseghian.org,MONDO:0018982,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:niemann-pick-uk,Niemann-Pick UK,https://www.npuk.org,MONDO:0001982;MONDO:0018982,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ulf,United Leukodystrophy Foundation,https://ulf.org,MONDO:0019046;MONDO:0018544;MONDO:0018868;MONDO:0009499,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ela,European Leukodystrophy Association (ELA),https://ela-asso.com,MONDO:0019046;MONDO:0018544;MONDO:0018868;MONDO:0009499,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:mld-foundation,MLD Foundation,https://mld.foundation,MONDO:0018868,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:hunters-hope,Hunter's Hope Foundation,https://www.huntershope.org,MONDO:0009499,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:krabbe-connect,KrabbeConnect,https://krabbeconnect.org,MONDO:0009499,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ald-connect,ALD Connect,https://aldconnect.org,MONDO:0018544;MONDO:0015339;MONDO:0010247,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ald-life,ALD Life (UK),https://aldlife.org,MONDO:0018544;MONDO:0015339,curated seed; HTTP GET <urlopen error [SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecogn on 2026-10-04,false
+ORG:gfpd,Global Foundation for Peroxisomal Disorders,https://thegfpd.org,MONDO:0019053;MONDO:0019609;MONDO:0019234;MONDO:0015776;MONDO:0009958,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:rhizokids,RhizoKids International,https://rhizokids.com,MONDO:0015776,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ohf,Oxalosis & Hyperoxaluria Foundation,https://ohf.org,MONDO:0009823,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:cystinosis-research-foundation,Cystinosis Research Foundation,https://www.cystinosisresearch.org,MONDO:0016239,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:cystinosis-research-network,Cystinosis Research Network,https://cystinosis.org,MONDO:0016239,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:bdsra,"Batten Disease Support, Research & Advocacy Foundation (BDSRA)",https://bdsrafoundation.org,MONDO:0016295,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:beyond-batten,Beyond Batten Disease Foundation,https://beyondbatten.org,MONDO:0016295;MONDO:0008767,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:bdfa-uk,Batten Disease Family Association (UK),https://bdfa-uk.org.uk,MONDO:0016295,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:cure-sanfilippo,Cure Sanfilippo Foundation,https://curesanfilippofoundation.org,MONDO:0018937,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:team-sanfilippo,Team Sanfilippo Foundation,https://teamsanfilippo.org,MONDO:0018937,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ntsad,National Tay-Sachs & Allied Diseases Association (NTSAD),https://ntsad.org,MONDO:0010100;MONDO:0010006;MONDO:0018149;MONDO:0017720,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:amda,Acid Maltase Deficiency Association,https://amda-pompe.org,MONDO:0009290,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:international-pompe-association,International Pompe Association,https://worldpompe.org,MONDO:0009290,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:ismrd,International Advocate for Glycoprotein Storage Diseases (ISMRD),https://www.ismrd.org,MONDO:0009561;MONDO:0009254;MONDO:0008830;MONDO:0017734;MONDO:0019248;MONDO:0009737,curated seed; HTTP GET 200 on 2026-10-04,true
+ORG:hide-and-seek,Hide & Seek Foundation for Lysosomal Disease Research,https://hideandseek.org,MONDO:0002561,curated seed; HTTP GET 200 on 2026-10-04,true

@@ -1,0 +1,104 @@
+# =============================================================================
+# Rare Disease Atlas -- .gitignore
+# Everything below is either large, regenerable by scripts/, private, or local.
+# Tracked: source code, config/, eval/ question sets, docs/ (incl. screenshots), demo/ (video + transcript), README.md,
+# tests/ (incl. queries.txt, project.txt, video.txt), requirements.txt, .env.example, start/stop.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Data -- downloaded or derived; rebuild with `bash scripts/run_all.sh`
+#   data/raw     PubMed abstracts (publisher copyright, do not redistribute),
+#                MONDO/HPO/Orphanet/Reactome dumps, ClinVar (450 MB), CT.gov, RePORTER, PubTator
+#   data/graph   parquet tables built by scripts/20-40
+#   data/cache   cached plain-language explanations (cite edge ids; stale after a rebuild)
+#   artifacts/   literature search index (embeds a copy of every abstract)
+# -----------------------------------------------------------------------------
+data/
+artifacts/
+*.parquet
+*.jsonl
+*.npy
+*.faiss
+*.index
+*.pkl
+*.part
+*.tmp
+
+# -----------------------------------------------------------------------------
+# Models -- multi-GB, fetched by scripts/00_fetch_models.sh
+# (models may be a symlink, hence both patterns)
+# -----------------------------------------------------------------------------
+models
+models/
+*.gguf
+*.bin
+*.safetensors
+*.onnx
+
+# -----------------------------------------------------------------------------
+# Generated output
+# -----------------------------------------------------------------------------
+logs/
+*.log
+eval/*.json
+eval/*.md
+eval/archive/
+screenshots/
+shots*/
+
+# -----------------------------------------------------------------------------
+# Python
+# -----------------------------------------------------------------------------
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# -----------------------------------------------------------------------------
+# Secrets and local configuration (.env.example is the tracked template)
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+*.pem
+*.key
+
+# -----------------------------------------------------------------------------
+# Hackathon brief and slide decks (large binaries, distributed separately)
+# -----------------------------------------------------------------------------
+*.pdf
+*.pptx
+*.ppt
+*.key.zip
+*.mov
+*.avi
+*.mkv
+*.webm
+# Videos are ignored by default, except the 1-minute demo that the README refers to.
+*.mp4
+!demo/video.mp4
+
+# -----------------------------------------------------------------------------
+# Editors, OS, tooling
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.claude/

@@ -1,0 +1,180 @@
+/* Rare Disease Atlas. Every colour below is a --ra-* variable injected from app/theme.py PALETTES
+   (light and dark variants); nothing is hard-coded, so the Auto / Light / Dark toggle repaints it all. */
+
+[data-testid="stMainBlockContainer"] { padding-top: 4.4rem; padding-bottom: 4rem; max-width: 1280px; }
+@media (max-width: 640px) {
+  [data-testid="stMainBlockContainer"] { padding-top: 4rem; padding-left: 1rem; padding-right: 1rem; }
+  h1, h2 { font-size: 1.55rem !important; }
+  .ra-hero { padding: 1.4rem 1.1rem !important; }
+  .ra-hero h1 { font-size: 1.7rem !important; }
+}
+h1, h2, h3, h4, h5 { letter-spacing: -.01em; }
+h4 { margin-top: .4rem; }
+.stApp h2 { padding-bottom: .15rem; }
+a { color: var(--ra-link); }
+:focus-visible { outline: 2px solid var(--ra-accent) !important; outline-offset: 2px; }
+
+/* ---------- top strip: breadcrumb, current disease, theme ---------- */
+.ra-crumbs { font-size: .85rem; color: var(--ra-muted); display: flex; align-items: center; gap: .4em; flex-wrap: wrap; }
+.ra-crumbs b { color: var(--ra-text); font-weight: 600; }
+.ra-crumbs .ra-sep { opacity: .55; }
+.ra-current { display: inline-flex; align-items: center; gap: .45em; padding: .12em .8em; border-radius: 999px;
+              font-size: .84rem; border: 1px solid var(--ra-accent); background: var(--ra-accent-soft);
+              color: var(--ra-text); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.ra-current small { color: var(--ra-muted); text-transform: uppercase; letter-spacing: .06em; font-size: .68rem; }
+.ra-pagehead h2 { margin: .2rem 0 0; }
+
+/* ---------- hero ---------- */
+.ra-hero { border: 1px solid var(--ra-border); border-radius: 1.1rem; padding: 2.2rem 2.2rem 2rem; margin: .3rem 0 1rem;
+           background: radial-gradient(120% 140% at 0% 0%, var(--ra-accent-soft) 0%, var(--ra-surface) 55%, var(--ra-bg) 100%); }
+.ra-hero .ra-eyebrow { color: var(--ra-accent); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .75rem; }
+.ra-hero h1 { font-size: 2.5rem; line-height: 1.12; margin: .35rem 0 .6rem; padding: 0; }
+.ra-hero p { font-size: 1.08rem; max-width: 46rem; color: var(--ra-muted); margin: 0; }
+.ra-hero .ra-steps { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1.1rem; }
+.ra-hero .ra-steps span { padding: .2em .8em; border-radius: 999px; font-size: .84rem; background: var(--ra-bg);
+                          border: 1px solid var(--ra-border); color: var(--ra-text); }
+
+/* ---------- chips ---------- */
+.ra-chip { display: inline-flex; align-items: center; gap: .4em; padding: .1em .65em; margin: 0 .3em .32em 0;
+  border-radius: 999px; font-size: .82rem; line-height: 1.6; white-space: nowrap; color: var(--ra-text);
+  border: 1px solid color-mix(in srgb, var(--c, var(--ra-faint)) 60%, transparent);
+  background: color-mix(in srgb, var(--c, var(--ra-faint)) 13%, transparent); }
+.ra-dot { width: .72em; height: .72em; background: var(--c); flex: none; display: inline-block; border-radius: 50%; }
+.ra-shape-diamond { border-radius: 1px; transform: rotate(45deg) scale(.86); }
+.ra-shape-square { border-radius: 1px; }
+.ra-shape-triangle { border-radius: 0; clip-path: polygon(50% 4%, 98% 94%, 2% 94%); width: .85em; height: .8em; }
+.ra-shape-triangleDown { border-radius: 0; clip-path: polygon(2% 6%, 98% 6%, 50% 96%); width: .85em; height: .8em; }
+.ra-shape-hexagon { border-radius: 0; clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%); width: .85em; height: .8em; }
+.ra-shape-star { border-radius: 0; width: .9em; height: .9em;
+  clip-path: polygon(50% 0, 62% 36%, 98% 36%, 69% 58%, 80% 94%, 50% 72%, 20% 94%, 31% 58%, 2% 36%, 38% 36%); }
+.ra-line { display: inline-block; width: 1.9em; border-top: 3px solid var(--c); }
+.ra-ev { background: transparent; }
+.ra-neutral { --c: var(--ra-faint); }
+.ra-muted { --c: var(--ra-faint); color: var(--ra-muted); }
+.ra-amber { --c: var(--ra-warn); }
+.ra-good { --c: var(--ra-good); }
+.ra-warn { --c: var(--ra-warn); }
+.ra-bad { --c: var(--ra-bad); }
+.ra-info { --c: var(--ra-info); }
+.ra-cross { --c: var(--ra-t-Gene); font-weight: 600; }
+.ra-accent { --c: var(--ra-accent); font-weight: 600; }
+
+.ra-legend { font-size: .8rem; line-height: 2.05; padding: .15rem 0; }
+.ra-legend-h { display: inline-block; min-width: 4.4em; color: var(--ra-muted); font-size: .72rem;
+               text-transform: uppercase; letter-spacing: .06em; }
+.ra-rel { color: var(--ra-muted); font-style: italic; padding: 0 .2em; }
+.ra-cite { color: var(--ra-link); font-weight: 700; }
+.ra-big { font-size: 1.05rem; }
+.ra-sub { color: var(--ra-muted); font-size: .88rem; }
+abbr.ra-gloss { text-decoration: underline dotted var(--ra-faint); text-underline-offset: 3px; cursor: help; }
+
+/* ---------- banners (verdicts, gaps, readiness) ---------- */
+.ra-banner { border: 1px solid color-mix(in srgb, var(--b) 55%, transparent); border-left: 5px solid var(--b);
+  background: var(--bb); border-radius: .7rem; padding: .75rem 1rem; margin: .2rem 0 .8rem; color: var(--ra-text); }
+.ra-banner b.ra-bt { color: var(--b); }
+.ra-banner-good { --b: var(--ra-good); --bb: var(--ra-good-bg); }
+.ra-banner-warn { --b: var(--ra-warn); --bb: var(--ra-warn-bg); }
+.ra-banner-bad { --b: var(--ra-bad); --bb: var(--ra-bad-bg); }
+.ra-banner-info { --b: var(--ra-info); --bb: var(--ra-info-bg); }
+
+/* ---------- confidence bar + stance ---------- */
+.ra-conf { display: flex; align-items: center; gap: .7em; margin: .2rem 0 .4rem; }
+.ra-bar { flex: 1; height: .6rem; border-radius: 999px; background: var(--ra-surface2); border: 1px solid var(--ra-border); overflow: hidden; }
+.ra-bar > i { display: block; height: 100%; background: var(--ra-accent); border-radius: 999px; }
+.ra-conf .ra-pct { font-weight: 700; min-width: 3em; text-align: right; }
+.ra-parts { display: grid; grid-template-columns: 8.5em 1fr 3em; gap: .15rem .6rem; align-items: center; font-size: .82rem; color: var(--ra-muted); }
+.ra-parts .ra-bar { height: .42rem; }
+
+/* ---------- readiness ---------- */
+.ra-ready { display: inline-flex; align-items: center; gap: .55em; padding: .25em .9em; border-radius: .6rem; font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--c) 60%, transparent); background: color-mix(in srgb, var(--c) 13%, transparent); color: var(--ra-text); }
+.ra-ready .ra-meter { display: inline-flex; gap: 3px; }
+.ra-ready .ra-meter i { width: .75em; height: .75em; border-radius: 2px; border: 1.5px solid var(--c); }
+.ra-ready .ra-meter i.on { background: var(--c); }
+
+/* ---------- cards ---------- */
+.ra-stat { border: 1px solid var(--ra-border); background: var(--ra-surface); border-radius: .8rem; padding: .7rem .9rem; }
+.ra-stat .ra-k { color: var(--ra-muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+.ra-stat .ra-v { font-size: 1.15rem; font-weight: 650; }
+.ra-callout { border: 1px solid var(--ra-border); border-left: 5px solid var(--ra-accent); background: var(--ra-surface);
+  border-radius: .7rem; padding: .8rem 1rem; margin: .3rem 0 .8rem; }
+.ra-tour { border: 1px dashed var(--ra-accent); background: var(--ra-accent-soft); border-radius: .7rem; padding: .6rem 1rem; margin: .2rem 0 .8rem; }
+.ra-table, .ra-table th, .ra-table td { border-left: 0 !important; border-right: 0 !important; border-top: 0 !important; background: transparent !important; }
+.ra-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.ra-table th { text-align: left; color: var(--ra-muted); font-weight: 600; border-bottom: 1px solid var(--ra-border); padding: .35rem .5rem; }
+.ra-table td { border-bottom: 1px solid var(--ra-border); padding: .4rem .5rem; vertical-align: top; }
+.ra-empty { border: 1px dashed var(--ra-border); border-radius: .7rem; padding: .9rem 1.1rem; color: var(--ra-muted); background: var(--ra-surface); }
+
+/* skeleton loader */
+@keyframes ra-shimmer { 0% { background-position: -300px 0; } 100% { background-position: 300px 0; } }
+.ra-skel { height: .9rem; border-radius: .4rem; margin: .55rem 0;
+  background: linear-gradient(90deg, var(--ra-surface2) 25%, var(--ra-surface) 50%, var(--ra-surface2) 75%) 0 0 / 600px 100%;
+  animation: ra-shimmer 1.4s infinite linear; }
+
+/* keep the evidence inspector in view while scrolling the left column */
+@media (min-width: 900px) {
+  div[data-testid="stColumn"]:has(> div [class*="_inspector"]) {
+    position: sticky; top: 4.2rem; align-self: flex-start;
+    max-height: calc(100vh - 5rem); overflow-y: auto;
+  }
+}
+
+/* step-by-step path */
+.ra-step { display: flex; gap: .7em; align-items: flex-start; padding: .35em 0; }
+.ra-step-n { flex: none; width: 1.7em; height: 1.7em; border-radius: 50%; text-align: center; line-height: 1.7em;
+             font-size: .8rem; font-weight: 700; background: var(--ra-accent-soft); color: var(--ra-text);
+             border: 1px solid var(--ra-accent); }
+
+@media (prefers-reduced-motion: reduce) { .ra-skel { animation: none; } }
+
+/*FORCE*/
+/* Applied only when the chosen theme differs from Streamlit's native one: repaint Streamlit's own chrome. */
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] { background: var(--ra-bg) !important; color: var(--ra-text) !important; }
+[data-testid="stHeader"] { background: var(--ra-bg) !important; }
+[data-testid="stHeader"] * { color: var(--ra-text) !important; }
+.stApp :is(p, li, h1, h2, h3, h4, h5, h6, label, summary, td, th, dt, dd, [data-testid="stMarkdownContainer"], [data-testid="stWidgetLabel"]) { color: var(--ra-text); }
+.stApp [data-testid="stCaptionContainer"], .stApp [data-testid="stCaptionContainer"] * { color: var(--ra-muted) !important; opacity: 1 !important; }
+.stApp .ra-sub, .stApp .ra-rel, .stApp .ra-crumbs { color: var(--ra-muted); }
+.stApp a { color: var(--ra-link); }
+/* inputs */
+.stApp :is([data-baseweb="input"], [data-baseweb="input"] > div, [data-baseweb="base-input"], [data-baseweb="textarea"], [data-baseweb="textarea"] > div, [data-baseweb="select"] > div, [data-testid="stTextInputRootElement"], [data-testid="stTextAreaRootElement"]) {
+  background: var(--ra-surface) !important; color: var(--ra-text) !important; border-color: var(--ra-border) !important; }
+.stApp :is(input, textarea) { color: var(--ra-text) !important; -webkit-text-fill-color: var(--ra-text) !important; background: transparent !important; }
+.stApp ::placeholder { color: var(--ra-faint) !important; -webkit-text-fill-color: var(--ra-faint) !important; opacity: 1; }
+.stApp [data-baseweb="select"], .stApp [data-baseweb="select"] div, .stApp [data-baseweb="select"] input { background-color: var(--ra-surface) !important; color: var(--ra-text) !important; -webkit-text-fill-color: var(--ra-text) !important; }
+.stApp [data-baseweb="select"] [role="combobox"] *, .stApp [data-baseweb="select"] [value] { color: var(--ra-text) !important; }
+.stApp [data-baseweb="select"] svg { fill: var(--ra-muted); }
+[data-baseweb="popover"] :is(ul, li, [role="listbox"], [role="option"], div) { background-color: var(--ra-surface) !important; color: var(--ra-text) !important; }
+[data-baseweb="popover"] li:hover, [data-baseweb="popover"] [aria-selected="true"] { background-color: var(--ra-surface2) !important; }
+[data-baseweb="tooltip"] :is(div), [data-testid="stTooltipContent"] { background: var(--ra-surface2) !important; color: var(--ra-text) !important; }
+/* buttons */
+.stApp button :is(p, span) { color: inherit !important; }
+.stApp :is(button[data-testid="stBaseButton-secondary"], button[data-testid="stBaseButton-secondaryFormSubmit"]) {
+  background: var(--ra-surface) !important; color: var(--ra-text) !important; border-color: var(--ra-border) !important; }
+.stApp :is(button[data-testid="stBaseButton-primary"], button[data-testid="stBaseButton-primaryFormSubmit"]) {
+  background: var(--ra-accent) !important; color: var(--ra-on-accent) !important; border-color: var(--ra-accent) !important; }
+.stApp :is(button[data-testid="stBaseButton-tertiary"], button[data-testid="stBaseButton-minimal"]) { background: transparent !important; color: var(--ra-text) !important; }
+.stApp :is(button[data-testid="stBaseButton-pills"], button[data-testid="stBaseButton-segmented_control"], button[data-variant="segmented_control"], button[data-variant="pills"]) {
+  background: var(--ra-surface) !important; color: var(--ra-text) !important; border-color: var(--ra-border) !important; }
+.stApp :is(button[data-testid="stBaseButton-pillsActive"], button[data-testid="stBaseButton-segmented_controlActive"], button[data-variant="segmented_control"][aria-checked="true"], button[data-variant="pills"][aria-checked="true"], button[role="radio"][aria-checked="true"]) {
+  background: var(--ra-accent) !important; color: var(--ra-on-accent) !important; border-color: var(--ra-accent) !important; }
+.stApp button[aria-checked="true"] * { color: var(--ra-on-accent) !important; }
+.stApp button[data-testid="stBaseButton-secondary"]:hover, .stApp button[data-testid="stBaseButton-pills"]:hover { border-color: var(--ra-accent) !important; }
+.stApp [data-testid="stDownloadButton"] button { background: var(--ra-surface) !important; color: var(--ra-text) !important; border-color: var(--ra-border) !important; }
+/* containers, expanders */
+.stApp [data-testid="stVerticalBlockBorderWrapper"] { border-color: var(--ra-border) !important; }
+.stApp [data-testid="stExpander"], .stApp [data-testid="stExpander"] details { border-color: var(--ra-border) !important; background: transparent !important; }
+.stApp [data-testid="stExpander"] summary:hover { background: var(--ra-surface); }
+.stApp hr { border-color: var(--ra-border) !important; }
+.stApp [data-testid="stAlert"] { background: var(--ra-surface2) !important; color: var(--ra-text) !important; border: 1px solid var(--ra-border); }
+.stApp [data-testid="stAlert"] * { color: var(--ra-text) !important; }
+.stApp [data-testid="stCode"], .stApp pre, .stApp code { background: var(--ra-surface2) !important; color: var(--ra-text) !important; }
+.stApp [data-testid="stCode"] * { color: var(--ra-text) !important; background: transparent !important; }
+.stApp [data-testid="stChatMessage"] { background: var(--ra-surface) !important; }
+.stApp [data-testid="stSpinner"] * { color: var(--ra-muted) !important; }
+.stApp [data-testid="stToggle"] label p { color: var(--ra-text) !important; }
+.stApp [data-testid="stMultiSelect"] [role="group"], .stApp [data-baseweb="select"] > div > div { background-color: var(--ra-surface) !important; }
+.stApp [data-testid="stMultiSelect"] [role="group"] span { background-color: var(--ra-accent-soft) !important; color: var(--ra-text) !important; border-color: var(--ra-accent) !important; }
+.stApp [data-testid="stMultiSelect"] svg { fill: var(--ra-text) !important; }
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) :is(div:has(> input), div:has(> div > input), div:has(> input) *) { background-color: var(--ra-surface) !important; color: var(--ra-text) !important; -webkit-text-fill-color: var(--ra-text) !important; }
+.stApp [data-testid="stSelectbox"] svg { fill: var(--ra-muted) !important; }

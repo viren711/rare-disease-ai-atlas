@@ -1,0 +1,685 @@
+RARE DISEASE ATLAS - TEST QUERIES FOR THE RUNNING SERVER
+=======================================================
+Generated 2026-10-04 from the live graph (60,869 nodes, 207,211 edges). 12 features x 50 checks = 600 lines.
+
+Setup:   ./start   then open http://localhost:8501   (or: ATLAS_FAKE=1 .venv/bin/streamlit run app/streamlit_app.py for demo data only)
+Format:  N. <input>  =>  <expected result>
+Notes:   - Sections 1-9 expectations are the atlas's own output at build time (counts and scores can change after a graph rebuild; re-run
+           the generator or treat them as 'about'). Sections 10-12 are behavioural checks.
+         - Section 11 (Ask) expectations are the INTENDED behaviour; the local 3B model can deviate. Record deviations, especially any answer that
+           states something the cited abstracts do not say.
+         - Timings are for a 6-core CPU: card + similar < 1 s, plan ~1 s, plain explanation 10-30 s first time then instant, Ask answer 10-50 s,
+           off-topic Ask refusal < 5 s.
+         - Automated coverage of the same features: scripts/45_check_atlas.py, scripts/smoke_test.py, scripts/ui_test.py, scripts/eval_ask.py.
+
+====================================================================================================
+1. SEARCH AND SYNONYM RESOLUTION (Home and Explore search box)
+====================================================================================================
+HOW TO TEST: Type the query in the single search box (Enter or Search). Expected value is the current top result; the 'Look for' filter should narrow by type; synonyms are announced ('X is another name for Y').
+
+ 1. Krabbe disease                   [exact name]  =>  top: Krabbe disease (Disease)
+ 2. globoid cell leukodystrophy      [synonym of Krabbe]  =>  top: Krabbe disease (Disease)
+ 3. GALC deficiency                  [synonym]  =>  top: Krabbe disease (Disease)
+ 4. Krabbe's                         [possessive form]  =>  top: Krabbe disease (Disease)
+ 5. X-ALD                            [abbreviation]  =>  top: adrenoleukodystrophy (Disease)
+ 6. adrenoleukodystrophy             [exact]  =>  top: adrenoleukodystrophy (Disease)
+ 7. Gaucher disease                  [exact]  =>  top: Gaucher disease (Disease)
+ 8. Fabry disease                    [exact]  =>  top: Fabry disease (Disease)
+ 9. Pompe disease                    [synonym of glycogen storage disease II]  =>  top: glycogen storage disease II (Disease)
+10. Hunter syndrome                  [synonym of MPS II]  =>  top: mucopolysaccharidosis type 2 (Disease)
+11. Hurler syndrome                  [synonym of MPS I]  =>  top: Hurler syndrome (Disease)
+12. Sanfilippo                       [partial name (MPS III)]  =>  top: mucopolysaccharidosis type 3A (Disease)
+13. Niemann-Pick type C              [exact]  =>  top: Niemann-Pick disease type C (Disease)
+14. NPC                              [abbreviation]  =>  top: NPC1 (Gene)
+15. Tay-Sachs                        [partial name]  =>  top: Tay-Sachs disease (Disease)
+16. Sandhoff disease                 [exact]  =>  top: Sandhoff disease (Disease)
+17. MLD                              [abbreviation]  =>  top: metachromatic leukodystrophy (Disease)
+18. metachromatic leukodystrophy     [exact]  =>  top: metachromatic leukodystrophy (Disease)
+19. Zellweger syndrome               [peroxisomal]  =>  top: Zellweger spectrum disorders (Disease)
+20. Refsum disease                   [peroxisomal]  =>  top: adult Refsum disease (Disease)
+21. cystinosis                       [single word]  =>  top: cystinosis (Disease)
+22. Batten disease                   [synonym of neuronal ceroid lipofuscinosis]  =>  top: juvenile neuronal ceroid lipofuscinosis (Disease)
+23. CLN3                             [gene]  =>  top: neuronal ceroid lipofuscinosis 3 (Disease)
+24. mucolipidosis                    [exact]  =>  top: mucolipidosis (Disease)
+25. Morquio                          [partial; sparse-data disease]  =>  top: mucopolysaccharidosis type 4 (Disease)
+26. Wolman disease                   [exact]  =>  top: Wolman disease (Disease)
+27. acatalasia                       [sparse peroxisomal disease]  =>  top: acatalasia (Disease)
+28. GALC                             [gene]  =>  top: GALC (Gene)
+29. ABCD1                            [gene (X-ALD)]  =>  top: ABCD1 (Gene)
+30. GBA1                             [gene (Gaucher)]  =>  top: GBA1 (Gene)
+31. GLA                              [gene (Fabry)]  =>  top: GLA (Gene)
+32. GAA                              [gene (Pompe)]  =>  top: GAA (Gene)
+33. IDS                              [gene (Hunter)]  =>  top: IDS (Gene)
+34. NPC1                             [gene]  =>  top: Niemann-Pick disease, type C1 (Disease)
+35. HEXA                             [gene (Tay-Sachs)]  =>  top: HEXA (Gene)
+36. CYP27A1                          [gene (CTX)]  =>  top: CYP27A1 (Gene)
+37. AMACR                            [gene]  =>  top: alpha-methylacyl-CoA racemase deficiency (Disease)
+38. PEX1                             [gene (Zellweger)]  =>  top: PEX1 (Gene)
+39. seizures                         [symptom]  =>  top: Seizure (Phenotype)
+40. cherry-red spot                  [rare symptom]  =>  top: Cherry red spot of the macula (Phenotype)
+41. hepatosplenomegaly               [symptom]  =>  top: Hepatosplenomegaly (Phenotype)
+42. ataxia                           [symptom]  =>  top: Ataxia (Phenotype)
+43. hearing loss                     [symptom, plain wording]  =>  top: Hearing impairment (Phenotype)
+44. glycosphingolipid catabolism     [pathway]  =>  top: Glycosphingolipid catabolism (Pathway)
+45. bile acid synthesis              [pathway]  =>  top: congenital bile acid synthesis defect 4 (Disease)
+46. autophagy                        [pathway]  =>  top: SQSTM1 (Gene)
+47. peroxisomal lipid metabolism     [pathway]  =>  top: Peroxisomal lipid metabolism (Pathway)
+48. Krabe disease                    [TYPO]  =>  top: Krabbe disease (Disease)
+49. gauchers desease                 [TYPO]  =>  top: Gaucher disease (Disease)
+50. fabri disease                    [TYPO]  =>  top: Fabry disease (Disease)
+
+====================================================================================================
+2. DISEASE CARD (Explore)
+====================================================================================================
+HOW TO TEST: Search the disease, open the card. Check genes, mechanism, distinctive vs common symptoms, epidemiology tiles, patient groups, counts line; every item has an Evidence button. Counts are from the current build and may drift after a rebuild.
+
+ 1. Gaucher disease                              => genes GBA1,SCARB2; ~3850 papers; 168 trials, 6 registries; 5 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+ 2. Fabry disease                                => genes GLA; ~3713 papers; 230 trials, 15 registries; 3 patient groups; prevalence 1-9 / 1 000 000 - Prevalence at bi
+ 3. Niemann-Pick disease                         => genes NPC1,NPC2,SMPD1; ~2459 papers; 70 trials, 2 registries; 3 patient groups; prevalence n/a
+ 4. gangliosidosis                               => genes GLB1,GM2A,HEXA,HEXB; ~1992 papers; 44 trials, 3 registries; 2 patient groups; prevalence n/a
+ 5. lysosomal glycogen storage disease           => genes GAA,LAMP2; ~1887 papers; 157 trials, 9 registries; 4 patient groups; prevalence n/a
+ 6. glycogen storage disease II                  => genes GAA; ~1862 papers; 156 trials, 8 registries; 3 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+ 7. glycoproteinosis                             => genes AGA,CTSA,FUCA1,GNPTAB,GNPTG,MAN2B1,MANBA,MCOLN1,NAGA,NEU1; ~1849 papers; 43 trials, 2 registries; 6 patient groups; prevalence n/a
+ 8. disorder of peroxisomal transporter          => genes ABCD1,ABCD3; ~1729 papers; 68 trials, 4 registries; 3 patient groups; prevalence n/a
+ 9. adrenoleukodystrophy                         => genes ABCD1; ~1728 papers; 68 trials, 4 registries; 3 patient groups; prevalence 1-9 / 1 000 000 - Point prevalence
+10. Niemann-Pick disease type C                  => genes NPC1,NPC2; ~1643 papers; 37 trials, 0 registries; 3 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+11. cerebral lipidosis with dementia             => genes ATP13A2,CLN3,CLN5,CLN6,CTSD,CTSF,CYP27A1,DNAJC5,GALC,GBA1,GRN,HEXA,HEXB,PPT1,SCARB2,TPP1; ~1370 papers; 61 trials, 5 registries; 5 patient groups; prevalence n/a
+12. GM2 gangliosidosis                           => genes GM2A,HEXA,HEXB; ~1348 papers; 34 trials, 3 registries; 2 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+13. metachromatic leukodystrophy                 => genes ARSA,PSAP; ~1255 papers; 48 trials, 2 registries; 3 patient groups; prevalence 1-9 / 100 000 - Prevalence at birt
+14. mucolipidosis                                => genes GNPTAB,GNPTG,MCOLN1,NEU1; ~1172 papers; 13 trials, 2 registries; 3 patient groups; prevalence n/a
+15. mucopolysaccharidosis type 2                 => genes IDS; ~1124 papers; 77 trials, 2 registries; 3 patient groups; prevalence 1-9 / 1 000 000 - Prevalence at bi
+16. Krabbe disease                               => genes GALC,PSAP; ~1002 papers; 29 trials, 2 registries; 5 patient groups; prevalence 1-9 / 1 000 000 - Prevalence at bi
+17. inborn disorder of lysosomal amino acid transport => genes CTNS,GNE,SLC17A5; ~1001 papers; 44 trials, 5 registries; 3 patient groups; prevalence n/a
+18. Tay-Sachs disease                            => genes HEXA; ~956 papers; 24 trials, 1 registries; 2 patient groups; prevalence Unknown - Point prevalence, Worldw
+19. mucopolysaccharidosis type 1                 => genes IDUA; ~934 papers; 45 trials, 0 registries; 4 patient groups; prevalence 1-9 / 1 000 000 - Prevalence at bi
+20. oligosaccharidosis                           => genes AGA,CTSA,FUCA1,MAN2B1,MANBA,NAGA,NEU1; ~918 papers; 33 trials, 2 registries; 3 patient groups; prevalence n/a
+21. peroxisome biogenesis disorder               => genes PEX1,PEX10,PEX11B,PEX12,PEX13,PEX14,PEX16,PEX19,PEX2,PEX26,PEX3,PEX5,PEX6,PEX7; ~886 papers; 9 trials, 4 registries; 4 patient groups; prevalence 1-9 / 100 000 - Prevalence at birt
+22. cystinosis                                   => genes CTNS; ~878 papers; 43 trials, 4 registries; 2 patient groups; prevalence 1-9 / 1 000 000 - Prevalence at bi
+23. Zellweger spectrum disorders                 => genes PEX1,PEX10,PEX11B,PEX12,PEX13,PEX14,PEX16,PEX19,PEX2,PEX26,PEX3,PEX5,PEX6,PEX7; ~772 papers; 9 trials, 3 registries; 1 patient groups; prevalence Unknown - Point prevalence, Worldw
+24. GM1 gangliosidosis                           => genes GLB1; ~754 papers; 20 trials, 1 registries; 2 patient groups; prevalence 1-9 / 1 000 000 - Prevalence at bi
+25. mucopolysaccharidosis type 4                 => genes GALNS,GLB1; ~634 papers; 95 trials, 4 registries; 4 patient groups; prevalence <1 / 1 000 000 - Prevalence at bir
+26. acid sphingomyelinase deficiency             => genes SMPD1; ~631 papers; 22 trials, 2 registries; 2 patient groups; prevalence n/a
+27. mucopolysaccharidosis type 6                 => genes ARSB; ~599 papers; 35 trials, 1 registries; 3 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+28. Sandhoff disease                             => genes HEXB; ~528 papers; 24 trials, 1 registries; 2 patient groups; prevalence 1-9 / 100 000 - Prevalence at birt
+29. mucopolysaccharidosis type 3                 => genes GNS,HGSNAT,NAGLU,SGSH; ~521 papers; 43 trials, 2 registries; 4 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+30. Hurler syndrome                              => genes IDUA; ~507 papers; 23 trials, 0 registries; 1 patient groups; prevalence 1-9 / 1 000 000 - Point prevalence
+31. Niemann-Pick disease type A                  => genes SMPD1; ~459 papers; 9 trials, 1 registries; 1 patient groups; prevalence <1 / 1 000 000 - Point prevalence,
+32. nephropathic cystinosis                      => genes CTNS; ~383 papers; 6 trials, 2 registries; 2 patient groups; prevalence n/a
+33. mucopolysaccharidosis type 7                 => genes GUSB; ~379 papers; 17 trials, 1 registries; 3 patient groups; prevalence <1 / 1 000 000 - Point prevalence,
+34. lysosomal acid lipase deficiency             => genes LIPA; ~366 papers; 35 trials, 2 registries; 0 patient groups; prevalence 1-9 / 100 000 - Point prevalence, 
+35. familial mucolipidosis                       => genes GNPTAB,GNPTG,MCOLN1,NEU1; ~355 papers; 4 trials, 1 registries; 3 patient groups; prevalence n/a
+36. adult Refsum disease                         => genes PEX7,PHYH; ~351 papers; 7 trials, 3 registries; 1 patient groups; prevalence 60.0 (reported Cases/families) - C
+37. triglyceride storage disease                 => genes none; ~0 papers; 0 trials, 0 registries; 0 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+38. triglyceride storage disease, type 1         => genes none; ~0 papers; 0 trials, 0 registries; 0 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+39. triglyceride storage disease, type 2         => genes none; ~0 papers; 0 trials, 0 registries; 0 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+40. Morquio syndrome C                           => genes none; ~0 papers; 0 trials, 0 registries; 0 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+41. neuronal ceroid lipofuscinosis 9             => genes none; ~0 papers; 0 trials, 0 registries; 0 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+42. Tay-Sachs disease, B1 variant                => genes none; ~0 papers; 0 trials, 0 registries; 1 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+43. Niemann-Pick disease type E                  => genes none; ~0 papers; 0 trials, 0 registries; 2 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+44. alpha-mannosidosis type 1                    => genes none; ~0 papers; 0 trials, 0 registries; 1 patient groups; prevalence n/a  [SPARSE: gap/empty states, no crash]
+45. Farber lipogranulomatosis                    => genes ASAH1; ~132 papers; 3 trials, 0 registries; 0 patient groups; prevalence <1 / 1 000 000 - Point prevalence,
+46. mucopolysaccharidosis type 4A                => genes GALNS; ~132 papers; 18 trials, 1 registries; 0 patient groups; prevalence 1-9 / 1 000 000 - Point prevalence
+47. ASAH1-related sphingolipidosis               => genes ASAH1; ~132 papers; 3 trials, 0 registries; 0 patient groups; prevalence n/a
+48. mucopolysaccharidosis type 3B                => genes NAGLU; ~131 papers; 14 trials, 0 registries; 3 patient groups; prevalence 1-9 / 1 000 000 - Point prevalence
+49. free sialic acid storage disease             => genes GNE,SLC17A5; ~131 papers; 1 trials, 1 registries; 0 patient groups; prevalence <1 / 1 000 000 - Point prevalence,
+50. Niemann-Pick disease, type C1                => genes NPC1; ~130 papers; 9 trials, 0 registries; 3 patient groups; prevalence n/a
+
+====================================================================================================
+3. SIMILAR DISEASES AND INTERACTIVE MAP (Explore)
+====================================================================================================
+HOW TO TEST: Open the disease, 'Similar diseases': check scores, 'Why linked?', the 'Only diseases from a different family' toggle, then the Map tab (click a node to expand, 'Two steps', 'Reset', node-type filter). Own subtypes must not be listed as similar.
+
+ 1. Gaucher disease                              => acid sphingomyelinase deficiency 0.22; Niemann-Pick disease 0.22; chronic neurovisceral acid sphingo 0.21
+ 2. Fabry disease                                => Tay-Sachs disease AB variant 0.35; late-infantile/juvenile Krabbe dis 0.34; adult Krabbe disease 0.33
+ 3. Niemann-Pick disease                         => lysosomal acid lipase deficiency 0.25; cholesteryl ester storage disease 0.25; ASAH1-related sphingolipidosis 0.23
+ 4. gangliosidosis                               => mucopolysaccharidosis type 4B 0.33; mucopolysaccharidosis type 4 0.32; mucolipidosis 0.26
+ 5. lysosomal glycogen storage disease           => no neighbours -> explained empty state
+ 6. glycogen storage disease II                  => no neighbours -> explained empty state
+ 7. glycoproteinosis                             => GM1 gangliosidosis 0.27; gangliosidosis 0.25; mucopolysaccharidosis 0.23
+ 8. disorder of peroxisomal transporter          => CADDS 0.21; disorder of peroxisomal beta oxida 0.21; cerebrotendinous xanthomatosis 0.16 | cross-family: cerebrotendinous xanthomatosis 0.16
+ 9. adrenoleukodystrophy                         => CADDS 0.21; peroxisome biogenesis disorder 8B 0.18; peroxisome biogenesis disorder due 0.17 | cross-family: adult Krabbe disease 0.16
+10. Niemann-Pick disease type C                  => Wolman disease 0.41; lysosomal acid lipase deficiency 0.39; cholesteryl ester storage disease 0.39
+11. cerebral lipidosis with dementia             => no neighbours -> explained empty state
+12. GM2 gangliosidosis                           => GM1 gangliosidosis 0.24; metachromatic leukodystrophy 0.21; Krabbe disease 0.20 | cross-family: adrenoleukodystrophy 0.11 (weak)
+13. metachromatic leukodystrophy                 => PSAP-related sphingolipidosis 0.44; Krabbe disease 0.43; combined PSAP deficiency 0.35 | cross-family: adrenoleukodystrophy 0.13 (weak)
+14. mucolipidosis                                => sialidosis 0.50; oligosaccharidosis 0.35; GM1 gangliosidosis 0.30
+15. mucopolysaccharidosis type 2                 => mucopolysaccharidosis type 1 0.33; Hurler syndrome 0.32; Scheie syndrome 0.27
+16. Krabbe disease                               => metachromatic leukodystrophy due t 0.48; PSAP-related sphingolipidosis 0.45; metachromatic leukodystrophy 0.43 | cross-family: adrenoleukodystrophy 0.15 (weak)
+17. inborn disorder of lysosomal amino acid transport => disorder of sialic acid metabolism 0.36; sialidosis 0.15
+18. Tay-Sachs disease                            => Sandhoff disease 0.43; Sandhoff disease, infantile form 0.33; Sandhoff disease, adult form 0.31
+19. mucopolysaccharidosis type 1                 => mucopolysaccharidosis type 2 0.33; mucopolysaccharidosis type 6 0.28; mucopolysaccharidosis type 7 0.24
+20. oligosaccharidosis                           => mucolipidosis 0.35; familial mucolipidosis 0.34; GM1 gangliosidosis 0.28
+21. peroxisome biogenesis disorder               => no neighbours -> explained empty state
+22. cystinosis                                   => no neighbours -> explained empty state
+23. Zellweger spectrum disorders                 => no neighbours -> explained empty state
+24. GM1 gangliosidosis                           => mucopolysaccharidosis type 4B 0.45; mucopolysaccharidosis type 4 0.42; sialidosis 0.32
+25. mucopolysaccharidosis type 4                 => GM1 gangliosidosis 0.42; GM1 gangliosidosis type 3 0.40; GM1 gangliosidosis type 1 0.40
+26. acid sphingomyelinase deficiency             => chronic neurovisceral acid sphingo 0.54; Farber lipogranulomatosis 0.25; ASAH1-related sphingolipidosis 0.24
+27. mucopolysaccharidosis type 6                 => mucopolysaccharidosis type 4 0.29; mucopolysaccharidosis type 4B 0.28; mucopolysaccharidosis type 1 0.28
+28. Sandhoff disease                             => Tay-Sachs disease 0.43; GM1 gangliosidosis 0.25; Tay-Sachs disease AB variant 0.24
+29. mucopolysaccharidosis type 3                 => mucopolysaccharidosis type 1 0.22; Hurler syndrome 0.21; mucopolysaccharidosis type 2 0.20
+30. Hurler syndrome                              => Hurler-Scheie syndrome 0.55; Scheie syndrome 0.53; mucopolysaccharidosis type 2 0.32
+31. Niemann-Pick disease type A                  => Niemann-Pick disease type B 0.62; chronic neurovisceral acid sphingo 0.52; Farber lipogranulomatosis 0.27
+32. nephropathic cystinosis                      => ocular cystinosis 0.47
+33. mucopolysaccharidosis type 7                 => mucopolysaccharidosis type 6 0.25; Hurler syndrome 0.24; mucopolysaccharidosis type 1 0.24
+34. lysosomal acid lipase deficiency             => Niemann-Pick disease, type C1 0.42; Niemann-Pick disease, type C2 0.40; Niemann-Pick disease type C 0.39
+35. familial mucolipidosis                       => sialidosis 0.54; oligosaccharidosis 0.34; GNPTAB-mucolipidosis 0.33
+36. adult Refsum disease                         => peroxisome biogenesis disorder 9B 0.34; rhizomelic chondrodysplasia puncta 0.24; rhizomelic chondrodysplasia puncta 0.23 | cross-family: alpha-N-acetylgalactosaminidase de 0.12 (weak)
+37. phytanoyl-CoA hydroxylase deficiency         => peroxisome biogenesis disorder 9B 0.34; rhizomelic chondrodysplasia puncta 0.24; rhizomelic chondrodysplasia puncta 0.23 | cross-family: alpha-N-acetylgalactosaminidase de 0.12 (weak)
+38. disorder of peroxisomal alpha oxidation      => peroxisome biogenesis disorder 9B 0.34; rhizomelic chondrodysplasia puncta 0.24; rhizomelic chondrodysplasia puncta 0.23 | cross-family: alpha-N-acetylgalactosaminidase de 0.12 (weak)
+39. adrenomyeloneuropathy                        => X-linked cerebral adrenoleukodystr 0.41; CADDS 0.23; peroxisome biogenesis disorder 8B 0.18 | cross-family: adult Krabbe disease 0.16
+40. GNPTAB-mucolipidosis                         => familial mucolipidosis 0.33; mucopolysaccharidosis 0.19; mucopolysaccharidosis type 1 0.18
+41. Niemann-Pick disease type B                  => Niemann-Pick disease type A 0.62; chronic neurovisceral acid sphingo 0.55; Farber lipogranulomatosis 0.24
+42. alpha-mannosidosis                           => beta-mannosidosis 0.41; mucopolysaccharidosis type 1 0.17; mucolipidosis 0.16
+43. Wolman disease                               => cholesteryl ester storage disease 0.66; Niemann-Pick disease, type C1 0.46; Niemann-Pick disease, type C2 0.44
+44. mucolipidosis type II                        => mucolipidosis type III, alpha/beta 0.23; familial mucolipidosis 0.18; mucopolysaccharidosis type 7 0.16
+45. glycogen storage disease due to acid maltase deficiency, late-onset => glycogen storage disease due to ac 0.42
+46. disorder of plasmalogens biosynthesis        => non-Zellweger spectrum disorder 0.58; peroxisome biogenesis disorder due 0.38; peroxisome biogenesis disorder due 0.27
+47. rhizomelic chondrodysplasia punctata         => non-Zellweger spectrum disorder 0.63; glyceronephosphate O-acyltransfera 0.54; peroxisome biogenesis disorder due 0.41
+48. sialidosis                                   => familial mucolipidosis 0.54; mucolipidosis 0.50; galactosialidosis 0.37
+49. mucolipidosis type IV                        => peroxisomal acyl-CoA oxidase defic 0.13 | cross-family: peroxisomal acyl-CoA oxidase defic 0.13 (weak)
+50. fucosidosis                                  => sialidosis 0.19; alpha-N-acetylgalactosaminidase de 0.19; sialidosis type 1 0.17
+
+====================================================================================================
+4. ACTION PLAN (Action plan page)
+====================================================================================================
+HOW TO TEST: Pick disease A, then 'Compare with'. Check the banner, readiness badge + reasons, path steps, shared assets, people, patient groups, 'what differs', next steps, caveats (stopped trials), Copy/Download proposal. Unsupported pairs must show the GAP panel, not an error.
+
+ 1. Gaucher disease                    vs acid sphingomyelinase deficiency   [top neighbour] => supported=True; readiness=strong; assets=11; people=10; groups=7
+ 2. Fabry disease                      vs Tay-Sachs disease AB variant       [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=4
+ 3. Niemann-Pick disease               vs lysosomal acid lipase deficiency   [top neighbour] => supported=True; readiness=strong; assets=15; people=10; groups=3
+ 4. gangliosidosis                     vs mucopolysaccharidosis type 4B      [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=2
+ 5. glycoproteinosis                   vs GM1 gangliosidosis                 [top neighbour] => supported=True; readiness=strong; assets=13; people=10; groups=8
+ 6. disorder of peroxisomal transporte vs CADDS                              [top neighbour] => supported=True; readiness=strong; assets=4; people=0; groups=4
+ 7. adrenoleukodystrophy               vs CADDS                              [top neighbour] => supported=True; readiness=strong; assets=4; people=0; groups=4
+ 8. Niemann-Pick disease type C        vs Wolman disease                     [top neighbour] => supported=True; readiness=strong; assets=7; people=10; groups=3
+ 9. GM2 gangliosidosis                 vs GM1 gangliosidosis                 [top neighbour] => supported=True; readiness=strong; assets=15; people=10; groups=2
+10. metachromatic leukodystrophy       vs PSAP-related sphingolipidosis      [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=3
+11. mucolipidosis                      vs sialidosis                         [top neighbour] => supported=True; readiness=strong; assets=6; people=10; groups=3
+12. mucopolysaccharidosis type 2       vs mucopolysaccharidosis type 1       [top neighbour] => supported=True; readiness=strong; assets=15; people=10; groups=4
+13. Krabbe disease                     vs metachromatic leukodystrophy due t [top neighbour] => supported=True; readiness=strong; assets=4; people=3; groups=6
+14. inborn disorder of lysosomal amino vs disorder of sialic acid metabolism [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=3
+15. Tay-Sachs disease                  vs Sandhoff disease                   [top neighbour] => supported=True; readiness=strong; assets=9; people=10; groups=2
+16. mucopolysaccharidosis type 1       vs mucopolysaccharidosis type 2       [top neighbour] => supported=True; readiness=strong; assets=15; people=10; groups=4
+17. oligosaccharidosis                 vs mucolipidosis                      [top neighbour] => supported=True; readiness=strong; assets=12; people=10; groups=5
+18. GM1 gangliosidosis                 vs mucopolysaccharidosis type 4B      [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=2
+19. mucopolysaccharidosis type 4       vs GM1 gangliosidosis                 [top neighbour] => supported=True; readiness=strong; assets=8; people=10; groups=5
+20. acid sphingomyelinase deficiency   vs chronic neurovisceral acid sphingo [top neighbour] => supported=True; readiness=strong; assets=4; people=0; groups=2
+21. mucopolysaccharidosis type 6       vs mucopolysaccharidosis type 4       [top neighbour] => supported=True; readiness=strong; assets=15; people=10; groups=4
+22. Sandhoff disease                   vs Tay-Sachs disease                  [top neighbour] => supported=True; readiness=strong; assets=10; people=10; groups=2
+23. mucopolysaccharidosis type 3       vs mucopolysaccharidosis type 1       [top neighbour] => supported=True; readiness=strong; assets=12; people=10; groups=6
+24. Hurler syndrome                    vs Hurler-Scheie syndrome             [top neighbour] => supported=True; readiness=strong; assets=13; people=10; groups=2
+25. Niemann-Pick disease type A        vs Niemann-Pick disease type B        [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=1
+26. nephropathic cystinosis            vs ocular cystinosis                  [top neighbour] => supported=True; readiness=strong; assets=4; people=10; groups=2
+27. mucopolysaccharidosis type 7       vs mucopolysaccharidosis type 6       [top neighbour] => supported=True; readiness=strong; assets=15; people=10; groups=3
+28. lysosomal acid lipase deficiency   vs Niemann-Pick disease, type C1      [top neighbour] => supported=True; readiness=strong; assets=5; people=10; groups=3
+29. disorder of peroxisomal transporte vs cerebrotendinous xanthomatosis     [cross-family] => supported=True; readiness=strong; assets=8; people=1; groups=3
+30. adrenoleukodystrophy               vs adult Krabbe disease               [cross-family] => supported=True; readiness=weak; assets=4; people=0; groups=5
+31. GM2 gangliosidosis                 vs adrenoleukodystrophy               [cross-family] => supported=True; readiness=moderate; assets=15; people=10; groups=5
+32. metachromatic leukodystrophy       vs adrenoleukodystrophy               [cross-family] => supported=True; readiness=moderate; assets=15; people=10; groups=4
+33. Krabbe disease                     vs adrenoleukodystrophy               [cross-family] => supported=True; readiness=moderate; assets=15; people=10; groups=6
+34. adult Refsum disease               vs alpha-N-acetylgalactosaminidase de [cross-family] => supported=True; readiness=weak; assets=4; people=0; groups=1
+35. phytanoyl-CoA hydroxylase deficien vs alpha-N-acetylgalactosaminidase de [cross-family] => supported=True; readiness=weak; assets=4; people=0; groups=1
+36. disorder of peroxisomal alpha oxid vs alpha-N-acetylgalactosaminidase de [cross-family] => supported=True; readiness=weak; assets=4; people=0; groups=1
+37. adrenomyeloneuropathy              vs adult Krabbe disease               [cross-family] => supported=True; readiness=weak; assets=3; people=0; groups=5
+38. acatalasia                         vs Fabry disease                      [expected NO ROUTE] => supported=False; readiness=none; assets=4; people=5; groups=3; GAP panel with searched/missing/next question
+39. Krabbe disease                     vs cystinosis                         [unrelated pair] => supported=False; readiness=none; assets=8; people=3; groups=7; GAP panel with searched/missing/next question
+40. Gaucher disease                    vs Zellweger spectrum disorders       [unrelated pair] => supported=True; readiness=moderate; assets=7; people=10; groups=6
+41. Fabry disease                      vs adult Refsum disease               [unrelated pair] => supported=True; readiness=moderate; assets=6; people=10; groups=4
+42. triglyceride storage disease       vs Gaucher disease                    [sparse disease vs rich disease] => supported=False; readiness=none; assets=4; people=0; groups=5; GAP panel with searched/missing/next question
+43. triglyceride storage disease, type vs Gaucher disease                    [sparse disease vs rich disease] => supported=False; readiness=none; assets=4; people=0; groups=5; GAP panel with searched/missing/next question
+44. triglyceride storage disease, type vs Gaucher disease                    [sparse disease vs rich disease] => supported=False; readiness=none; assets=4; people=0; groups=5; GAP panel with searched/missing/next question
+45. Gaucher disease                    vs (default best neighbour: acid sphingomyelinase deficien) [default B] => supported=True; readiness=strong
+46. Fabry disease                      vs (default best neighbour: Tay-Sachs disease AB variant) [default B] => supported=True; readiness=strong
+47. Niemann-Pick disease               vs (default best neighbour: lysosomal acid lipase deficien) [default B] => supported=True; readiness=strong
+48. gangliosidosis                     vs (default best neighbour: mucopolysaccharidosis type 4B) [default B] => supported=True; readiness=strong
+49. lysosomal glycogen storage disease vs (default best neighbour: none) [default B] => supported=False; readiness=none
+50. glycogen storage disease II        vs (default best neighbour: none) [default B] => supported=False; readiness=none
+
+====================================================================================================
+5. EXPLAIN SIMPLY (plain-language summaries)
+====================================================================================================
+HOW TO TEST: Click 'Explain simply' on the plan or the Explore card; toggle to Technical view and back. Verify: no invented names or numbers, every [n] opens a real edge, text states uncertainty and gaps, and ends with the 'research lead, not medical advice' line (plans).
+
+ 1. PLAN  Gaucher disease vs acid sphingomyelinase deficiency [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 2. PLAN  Fabry disease vs Tay-Sachs disease AB variant [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 3. PLAN  Niemann-Pick disease vs lysosomal acid lipase deficiency [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 4. PLAN  gangliosidosis vs mucopolysaccharidosis type 4B [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 5. PLAN  glycoproteinosis vs GM1 gangliosidosis [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 6. PLAN  disorder of peroxisomal transporte vs CADDS [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 7. PLAN  adrenoleukodystrophy vs CADDS [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 8. PLAN  Niemann-Pick disease type C vs Wolman disease [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+ 9. PLAN  GM2 gangliosidosis vs GM1 gangliosidosis [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+10. PLAN  metachromatic leukodystrophy vs PSAP-related sphingolipidosis [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+11. PLAN  mucolipidosis vs sialidosis [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+12. PLAN  mucopolysaccharidosis type 2 vs mucopolysaccharidosis type 1 [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+13. PLAN  Krabbe disease vs metachromatic leukodystrophy due t [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+14. PLAN  inborn disorder of lysosomal amino vs disorder of sialic acid metabolism [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+15. PLAN  Tay-Sachs disease vs Sandhoff disease [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+16. PLAN  mucopolysaccharidosis type 1 vs mucopolysaccharidosis type 2 [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+17. PLAN  oligosaccharidosis vs mucolipidosis [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+18. PLAN  GM1 gangliosidosis vs mucopolysaccharidosis type 4B [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+19. PLAN  mucopolysaccharidosis type 4 vs GM1 gangliosidosis [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+20. PLAN  acid sphingomyelinase deficiency vs chronic neurovisceral acid sphingo [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+21. PLAN  mucopolysaccharidosis type 6 vs mucopolysaccharidosis type 4 [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+22. PLAN  Sandhoff disease vs Tay-Sachs disease [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+23. PLAN  mucopolysaccharidosis type 3 vs mucopolysaccharidosis type 1 [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+24. PLAN  Hurler syndrome vs Hurler-Scheie syndrome [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+25. PLAN  Niemann-Pick disease type A vs Niemann-Pick disease type B [top neighbour] => 4 parts (Short answer / What is uncertain / Who can help / This week); [n] chips open the inspector; badge 'AI-rewritten, citations verified' or 'Template text'; no raw field names
+26. CARD  Gaucher disease => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+27. CARD  Fabry disease => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+28. CARD  Niemann-Pick disease => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+29. CARD  gangliosidosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+30. CARD  lysosomal glycogen storage disease => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+31. CARD  glycogen storage disease II => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+32. CARD  glycoproteinosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+33. CARD  disorder of peroxisomal transporter => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+34. CARD  adrenoleukodystrophy => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+35. CARD  Niemann-Pick disease type C => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+36. CARD  cerebral lipidosis with dementia => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+37. CARD  GM2 gangliosidosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+38. CARD  metachromatic leukodystrophy => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+39. CARD  mucolipidosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+40. CARD  mucopolysaccharidosis type 2 => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+41. CARD  Krabbe disease => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+42. CARD  inborn disorder of lysosomal amino acid tran => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+43. CARD  Tay-Sachs disease => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+44. CARD  mucopolysaccharidosis type 1 => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+45. CARD  oligosaccharidosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+46. CARD  peroxisome biogenesis disorder => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+47. CARD  cystinosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+48. CARD  Zellweger spectrum disorders => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+49. CARD  GM1 gangliosidosis => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+50. CARD  mucopolysaccharidosis type 4 => 'Overview:' summary, jargon hover-defined, cited; first run 10-30 s with spinner, second run instant (cache)
+
+====================================================================================================
+6. FUNDING (Explore > Funding; Action plan funding section)
+====================================================================================================
+HOW TO TEST: Open the Funding tab: grant title, PI, organisation, fiscal years, amount, link to RePORTER, active flag, match reason. Gap diseases must say 'NIH only; other funders not covered'.
+
+ 1. Gaucher disease                              => 93 NIH grants (17 active)
+ 2. Fabry disease                                => 63 NIH grants (2 active)
+ 3. Niemann-Pick disease                         => 63 NIH grants (7 active)
+ 4. gangliosidosis                               => 50 NIH grants (3 active)
+ 5. lysosomal glycogen storage disease           => 72 NIH grants (10 active)
+ 6. glycogen storage disease II                  => 69 NIH grants (10 active)
+ 7. glycoproteinosis                             => 51 NIH grants (8 active)
+ 8. disorder of peroxisomal transporter          => 60 NIH grants (12 active)
+ 9. adrenoleukodystrophy                         => 60 NIH grants (12 active)
+10. Niemann-Pick disease type C                  => 37 NIH grants (6 active)
+11. cerebral lipidosis with dementia             => 151 NIH grants (17 active)
+12. GM2 gangliosidosis                           => 30 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+13. metachromatic leukodystrophy                 => 14 NIH grants (3 active)
+14. mucolipidosis                                => 33 NIH grants (2 active)
+15. mucopolysaccharidosis type 2                 => 19 NIH grants (2 active)
+16. Krabbe disease                               => 66 NIH grants (10 active)
+17. inborn disorder of lysosomal amino acid transport => 40 NIH grants (2 active)
+18. Tay-Sachs disease                            => 16 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+19. mucopolysaccharidosis type 1                 => 41 NIH grants (9 active)
+20. oligosaccharidosis                           => 21 NIH grants (6 active)
+21. peroxisome biogenesis disorder               => 21 NIH grants (3 active)
+22. cystinosis                                   => 36 NIH grants (2 active)
+23. Zellweger spectrum disorders                 => 19 NIH grants (3 active)
+24. GM1 gangliosidosis                           => 26 NIH grants (3 active)
+25. mucopolysaccharidosis type 4                 => 5 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+26. acid sphingomyelinase deficiency             => 4 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+27. mucopolysaccharidosis type 6                 => 2 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+28. Sandhoff disease                             => 17 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+29. mucopolysaccharidosis type 3                 => 27 NIH grants (6 active)
+30. Hurler syndrome                              => 25 NIH grants (7 active)
+31. Niemann-Pick disease type A                  => 4 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+32. nephropathic cystinosis                      => 4 NIH grants (1 active)
+33. mucopolysaccharidosis type 7                 => 6 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+34. lysosomal acid lipase deficiency             => 3 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+35. familial mucolipidosis                       => 23 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+36. adult Refsum disease                         => 3 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+37. phytanoyl-CoA hydroxylase deficiency         => 3 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+38. disorder of peroxisomal alpha oxidation      => 3 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+39. adrenomyeloneuropathy                        => 19 NIH grants (5 active)
+40. GNPTAB-mucolipidosis                         => 7 NIH grants (2 active)
+41. Niemann-Pick disease type B                  => 1 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+42. alpha-mannosidosis                           => 4 NIH grants (1 active)
+43. Wolman disease                               => 0 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+44. mucolipidosis type II                        => 7 NIH grants (2 active)
+45. triglyceride storage disease                 => 0 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+46. triglyceride storage disease, type 1         => 0 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+47. triglyceride storage disease, type 2         => 0 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+48. mucolipidosis type III, alpha/beta           => 1 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+49. Scheie syndrome                              => 2 NIH grants (0 active); FUNDING GAP note shown (NIH only)
+50. Gaucher disease type I                       => 3 NIH grants (1 active)
+
+====================================================================================================
+7. VARIANTS (Explore > Variants; Action plan variants expander)
+====================================================================================================
+HOW TO TEST: Open the Variants tab for a gene's disease. Check counts, top pathogenic variants (HGVS, stars, review status, submitters, ClinVar link). Counts cover all ClinVar records for the gene; the table lists only >=1-star pathogenic variants kept in the graph.
+
+ 1. GAA        => pathogenic 858, uncertain 1198, benign 1330, conflicting 249; 50 variants in graph
+ 2. NPC1       => pathogenic 644, uncertain 669, benign 1302, conflicting 167; 50 variants in graph
+ 3. PEX1       => pathogenic 472, uncertain 663, benign 867, conflicting 114; 50 variants in graph
+ 4. GLA        => pathogenic 1168, uncertain 479, benign 311, conflicting 130; 50 variants in graph
+ 5. PEX6       => pathogenic 307, uncertain 655, benign 939, conflicting 89; 50 variants in graph
+ 6. MAN2B1     => pathogenic 363, uncertain 500, benign 988, conflicting 80; 50 variants in graph
+ 7. IDUA       => pathogenic 421, uncertain 555, benign 880, conflicting 78; 50 variants in graph
+ 8. ABCD1      => pathogenic 521, uncertain 508, benign 598, conflicting 155; 50 variants in graph
+ 9. GNPTAB     => pathogenic 445, uncertain 415, benign 821, conflicting 58; 50 variants in graph
+10. GALC       => pathogenic 370, uncertain 427, benign 694, conflicting 97; 50 variants in graph
+11. HSD17B4    => pathogenic 268, uncertain 391, benign 781, conflicting 74; 50 variants in graph
+12. IDS        => pathogenic 796, uncertain 224, benign 377, conflicting 64; 50 variants in graph
+13. NAGLU      => pathogenic 302, uncertain 472, benign 603, conflicting 70; 50 variants in graph
+14. GALNS      => pathogenic 326, uncertain 354, benign 584, conflicting 153; 50 variants in graph
+15. HGSNAT     => pathogenic 196, uncertain 455, benign 655, conflicting 55; 50 variants in graph
+16. ARSA       => pathogenic 368, uncertain 404, benign 481, conflicting 74; 50 variants in graph
+17. HEXA       => pathogenic 331, uncertain 441, benign 526, conflicting 35; 50 variants in graph
+18. TPP1       => pathogenic 224, uncertain 449, benign 547, conflicting 67; 50 variants in graph
+19. ATP13A2    => pathogenic 99, uncertain 489, benign 563, conflicting 111; 50 variants in graph
+20. GLB1       => pathogenic 327, uncertain 260, benign 600, conflicting 61; 50 variants in graph
+21. AP5Z1      => pathogenic 73, uncertain 599, benign 480, conflicting 103; 50 variants in graph
+22. CYP27A1    => pathogenic 214, uncertain 440, benign 515, conflicting 89; 50 variants in graph
+23. GNE        => pathogenic 223, uncertain 478, benign 455, conflicting 85; 50 variants in graph
+24. CLN3       => pathogenic 232, uncertain 365, benign 582, conflicting 52; 50 variants in graph
+25. SMPD1      => pathogenic 381, uncertain 283, benign 419, conflicting 117; 50 variants in graph
+26. SGSH       => pathogenic 209, uncertain 354, benign 521, conflicting 75; 50 variants in graph
+27. PEX5       => pathogenic 80, uncertain 419, benign 533, conflicting 64; 50 variants in graph
+28. MFSD8      => pathogenic 167, uncertain 391, benign 450, conflicting 44; 50 variants in graph
+29. ASAH1      => pathogenic 129, uncertain 353, benign 511, conflicting 33; 50 variants in graph
+30. AGXT       => pathogenic 341, uncertain 194, benign 449, conflicting 45; 50 variants in graph
+31. ARSB       => pathogenic 257, uncertain 299, benign 409, conflicting 63; 50 variants in graph
+32. GNPTG      => pathogenic 159, uncertain 291, benign 525, conflicting 41; 50 variants in graph
+33. PSAP       => pathogenic 96, uncertain 302, benign 543, conflicting 49; 50 variants in graph
+34. MCOLN1     => pathogenic 132, uncertain 196, benign 590, conflicting 66; 50 variants in graph
+35. LAMP2      => pathogenic 154, uncertain 290, benign 360, conflicting 66; 50 variants in graph
+36. HEXB       => pathogenic 228, uncertain 239, benign 438, conflicting 30; 50 variants in graph
+37. ACOX1      => pathogenic 82, uncertain 352, benign 467, conflicting 28; 50 variants in graph
+38. CTNS       => pathogenic 203, uncertain 260, benign 406, conflicting 33; 50 variants in graph
+39. MANBA      => pathogenic 113, uncertain 266, benign 486, conflicting 27; 50 variants in graph
+40. DNM1L      => pathogenic 68, uncertain 323, benign 456, conflicting 23; 50 variants in graph
+41. TRIM37     => pathogenic 117, uncertain 229, benign 497, conflicting 20; 50 variants in graph
+42. PEX10      => pathogenic 144, uncertain 325, benign 360, conflicting 42; 50 variants in graph
+43. GNS        => pathogenic 84, uncertain 262, benign 478, conflicting 17; 50 variants in graph
+44. GRN        => pathogenic 135, uncertain 348, benign 278, conflicting 40; 50 variants in graph
+45. CLN6       => pathogenic 121, uncertain 242, benign 400, conflicting 60; 50 variants in graph
+46. SUMF1      => pathogenic 134, uncertain 242, benign 418, conflicting 32; 50 variants in graph
+47. Gaucher disease                          => disease-level variants view (union of its genes); counts shown, no crash
+48. Fabry disease                            => disease-level variants view (union of its genes); counts shown, no crash
+49. Niemann-Pick disease                     => disease-level variants view (union of its genes); counts shown, no crash
+50. gangliosidosis                           => disease-level variants view (union of its genes); counts shown, no crash
+
+====================================================================================================
+8. COLLABORATORS (Explore > Collaborators; Action plan 'People who work on both')
+====================================================================================================
+HOW TO TEST: Open the tab: ranked researchers with 'why', affiliation, ORCID link when known, homonym warning when identity is name-based.
+
+ 1. Gaucher disease                              => top: Ying Sun (score 0.90; 44 papers, 5 grants)
+ 2. Fabry disease                                => top: Arndt Rolfs (score 0.60; 35 papers, 0 grants)
+ 3. Niemann-Pick disease                         => top: Stephanie M Cologna (score 0.75; 30 papers, 2 grants)
+ 4. gangliosidosis                               => top: Alessandra d'Azzo (score 0.80; 43 papers, 4 grants)
+ 5. lysosomal glycogen storage disease           => top: Harrison N Jones (score 0.75; 23 papers, 1 grants)
+ 6. glycogen storage disease II                  => top: Harrison N Jones (score 0.75; 23 papers, 1 grants)
+ 7. glycoproteinosis                             => top: Kirill Kiselyov (score 0.74; 13 papers, 4 grants)
+ 8. disorder of peroxisomal transporter          => top: Wolfgang Kohler (score 0.60; 34 papers, 0 grants)
+ 9. adrenoleukodystrophy                         => top: Wolfgang Kohler (score 0.60; 34 papers, 0 grants)
+10. Niemann-Pick disease type C                  => top: Stephanie M Cologna (score 0.75; 30 papers, 2 grants)
+11. cerebral lipidosis with dementia             => top: Richard L Proia (score 0.80; 33 papers, 4 grants)
+12. GM2 gangliosidosis                           => top: Richard L Proia (score 0.80; 36 papers, 4 grants)
+13. metachromatic leukodystrophy                 => top: Laura A Adang (score 0.80; 17 papers, 2 grants)
+14. mucolipidosis                                => top: Kirill Kiselyov (score 0.74; 13 papers, 4 grants)
+15. mucopolysaccharidosis type 2                 => top: Dong-Kyu Jin (score 0.55; 20 papers, 0 grants)
+16. Krabbe disease                               => top: Daesung Shin (score 0.64; 8 papers, 3 grants)
+17. inborn disorder of lysosomal amino acid transport => top: Aude Servais (score 0.65; 17 papers, 0 grants)
+18. Tay-Sachs disease                            => top: Richard L Proia (score 0.60; 25 papers, 1 grants)
+19. mucopolysaccharidosis type 1                 => top: Mark E Haskins (score 0.55; 15 papers, 1 grants)
+20. oligosaccharidosis                           => top: Alessandra d'Azzo (score 0.70; 41 papers, 2 grants)
+21. peroxisome biogenesis disorder               => top: Ann B Moser (score 0.50; 62 papers, 0 grants)
+22. cystinosis                                   => top: Aude Servais (score 0.65; 17 papers, 0 grants)
+23. Zellweger spectrum disorders                 => top: Ann B Moser (score 0.50; 52 papers, 0 grants)
+24. GM1 gangliosidosis                           => top: Alessandra d'Azzo (score 0.80; 39 papers, 4 grants)
+25. mucopolysaccharidosis type 4                 => top: Adriana M Montaño (score 0.50; 27 papers, 0 grants)
+26. acid sphingomyelinase deficiency             => top: Margaret M McGovern (score 0.60; 23 papers, 1 grants)
+27. mucopolysaccharidosis type 6                 => top: Mark E Haskins (score 0.55; 36 papers, 1 grants)
+28. Sandhoff disease                             => top: Richard L Proia (score 0.80; 21 papers, 4 grants)
+29. mucopolysaccharidosis type 3                 => top: Patricia I Dickson (score 0.56; 7 papers, 3 grants)
+30. Hurler syndrome                              => top: Chester B Whitley (score 0.50; 23 papers, 0 grants)
+31. Niemann-Pick disease type A                  => top: Margaret M McGovern (score 0.57; 14 papers, 1 grants)
+32. nephropathic cystinosis                      => top: Doris A Trauner (score 0.60; 16 papers, 1 grants)
+33. mucopolysaccharidosis type 7                 => top: William S Sly (score 0.55; 59 papers, 1 grants)
+34. lysosomal acid lipase deficiency             => top: Gregory A Grabowski (score 0.41; 12 papers, 0 grants)
+35. familial mucolipidosis                       => top: Kirill Kiselyov (score 0.68; 11 papers, 4 grants)
+36. adult Refsum disease                         => top: Ronald J A Wanders (score 0.50; 51 papers, 0 grants)
+37. phytanoyl-CoA hydroxylase deficiency         => top: Ronald J A Wanders (score 0.50; 51 papers, 0 grants)
+38. disorder of peroxisomal alpha oxidation      => top: Ronald J A Wanders (score 0.50; 51 papers, 0 grants)
+39. adrenomyeloneuropathy                        => top: Ann B Moser (score 0.50; 18 papers, 0 grants)
+40. GNPTAB-mucolipidosis                         => top: Richard Steet (score 0.33; 1 papers, 2 grants)
+41. Niemann-Pick disease type B                  => top: Margaret M McGovern (score 0.60; 20 papers, 1 grants)
+42. alpha-mannosidosis                           => top: Allan M Lund (score 0.59; 13 papers, 0 grants)
+43. Wolman disease                               => top: Gregory A Grabowski (score 0.38; 11 papers, 0 grants)
+44. mucolipidosis type II                        => top: Richard Steet (score 0.33; 1 papers, 2 grants)
+45. glycogen storage disease due to acid maltase deficiency, late-onset => top: Harrison N Jones (score 0.52; 14 papers, 0 grants)
+46. disorder of plasmalogens biosynthesis        => top: Ann B Moser (score 0.50; 19 papers, 0 grants)
+47. rhizomelic chondrodysplasia punctata         => top: Ann B Moser (score 0.50; 19 papers, 0 grants)
+48. sialidosis                                   => top: Alessandra d'Azzo (score 0.60; 21 papers, 1 grants)
+49. mucolipidosis type IV                        => top: Kirill Kiselyov (score 0.68; 11 papers, 4 grants)
+50. fucosidosis                                  => top: John F O'Brien (score 0.47; 14 papers, 0 grants)
+
+====================================================================================================
+9. RESEARCH ASSETS (Explore > Assets; Action plan 'What already exists')
+====================================================================================================
+HOW TO TEST: Open Assets: trials, registries, natural-history and observational studies, models. Stopped trials show 'why stopped' and must not be presented as open opportunities. Each card links to ClinicalTrials.gov and has an Evidence button.
+
+ 1. Gaucher disease                              => trials 104, registries 6, natural_history 37, observational 27, models 22
+ 2. Fabry disease                                => trials 113, registries 15, natural_history 69, observational 48, models 13
+ 3. Niemann-Pick disease                         => trials 48, registries 2, natural_history 14, observational 8, models 20
+ 4. gangliosidosis                               => trials 28, registries 3, natural_history 15, observational 1, models 17
+ 5. lysosomal glycogen storage disease           => trials 97, registries 9, natural_history 27, observational 33, models 15
+ 6. glycogen storage disease II                  => trials 96, registries 8, natural_history 27, observational 33, models 14
+ 7. glycoproteinosis                             => trials 25, registries 2, natural_history 15, observational 3, models 16
+ 8. disorder of peroxisomal transporter          => trials 50, registries 4, natural_history 12, observational 6, models 15
+ 9. adrenoleukodystrophy                         => trials 50, registries 4, natural_history 12, observational 6, models 15
+10. Niemann-Pick disease type C                  => trials 28, registries 0, natural_history 6, observational 3, models 13
+11. cerebral lipidosis with dementia             => trials 33, registries 5, natural_history 18, observational 10, models 30
+12. GM2 gangliosidosis                           => trials 23, registries 3, natural_history 10, observational 1, models 16
+13. metachromatic leukodystrophy                 => trials 32, registries 2, natural_history 11, observational 5, models 9
+14. mucolipidosis                                => trials 5, registries 2, natural_history 7, observational 1, models 11
+15. mucopolysaccharidosis type 2                 => trials 52, registries 2, natural_history 17, observational 8, models 8
+16. Krabbe disease                               => trials 15, registries 2, natural_history 10, observational 4, models 17
+17. inborn disorder of lysosomal amino acid transport => trials 28, registries 5, natural_history 10, observational 6, models 9
+18. Tay-Sachs disease                            => trials 15, registries 1, natural_history 8, observational 1, models 12
+19. mucopolysaccharidosis type 1                 => trials 31, registries 0, natural_history 9, observational 5, models 12
+20. oligosaccharidosis                           => trials 21, registries 2, natural_history 9, observational 3, models 13
+21. peroxisome biogenesis disorder               => trials 5, registries 4, natural_history 4, observational 0, models 9
+22. cystinosis                                   => trials 28, registries 4, natural_history 9, observational 6, models 9
+23. Zellweger spectrum disorders                 => trials 5, registries 3, natural_history 4, observational 0, models 9
+24. GM1 gangliosidosis                           => trials 10, registries 1, natural_history 9, observational 1, models 13
+25. mucopolysaccharidosis type 4                 => trials 55, registries 4, natural_history 21, observational 19, models 9
+26. acid sphingomyelinase deficiency             => trials 13, registries 2, natural_history 8, observational 1, models 9
+27. mucopolysaccharidosis type 6                 => trials 20, registries 1, natural_history 10, observational 5, models 9
+28. Sandhoff disease                             => trials 16, registries 1, natural_history 7, observational 1, models 12
+29. mucopolysaccharidosis type 3                 => trials 26, registries 2, natural_history 13, observational 4, models 10
+30. Hurler syndrome                              => trials 21, registries 0, natural_history 2, observational 0, models 11
+31. Niemann-Pick disease type A                  => trials 7, registries 1, natural_history 2, observational 0, models 9
+32. nephropathic cystinosis                      => trials 4, registries 2, natural_history 2, observational 0, models 7
+33. mucopolysaccharidosis type 7                 => trials 10, registries 1, natural_history 6, observational 1, models 12
+34. lysosomal acid lipase deficiency             => trials 17, registries 2, natural_history 11, observational 7, models 8
+35. familial mucolipidosis                       => trials 1, registries 1, natural_history 3, observational 0, models 9
+36. adult Refsum disease                         => trials 4, registries 3, natural_history 3, observational 0, models 7
+37. phytanoyl-CoA hydroxylase deficiency         => trials 4, registries 3, natural_history 3, observational 0, models 7
+38. disorder of peroxisomal alpha oxidation      => trials 4, registries 3, natural_history 3, observational 0, models 7
+39. adrenomyeloneuropathy                        => trials 13, registries 1, natural_history 2, observational 1, models 12
+40. GNPTAB-mucolipidosis                         => trials 2, registries 0, natural_history 0, observational 1, models 9
+41. Niemann-Pick disease type B                  => trials 3, registries 0, natural_history 0, observational 0, models 8
+42. alpha-mannosidosis                           => trials 17, registries 0, natural_history 6, observational 1, models 10
+43. Wolman disease                               => trials 17, registries 2, natural_history 8, observational 6, models 8
+44. mucolipidosis type II                        => trials 2, registries 0, natural_history 0, observational 1, models 9
+45. glycogen storage disease due to acid maltase deficiency, late-onset => trials 24, registries 2, natural_history 2, observational 5, models 0
+46. disorder of plasmalogens biosynthesis        => trials 1, registries 2, natural_history 1, observational 0, models 8
+47. rhizomelic chondrodysplasia punctata         => trials 1, registries 2, natural_history 1, observational 0, models 8
+48. sialidosis                                   => trials 0, registries 1, natural_history 1, observational 0, models 11
+49. mucolipidosis type IV                        => trials 1, registries 1, natural_history 3, observational 0, models 9
+50. fucosidosis                                  => trials 7, registries 0, natural_history 2, observational 1, models 8
+
+====================================================================================================
+10. EVIDENCE INSPECTOR, CONFIDENCE AND CONTRADICTIONS
+====================================================================================================
+HOW TO TEST: Open the inspector from the item named and verify the stated behaviour.
+
+ 1. Disease card > gene chip 'Evidence' => curated (solid), source Orphanet/HPO, date, confidence bar
+ 2. Disease card > symptom chip 'Evidence' => HPO annotation, IC (information content) shown, 'distinctive' vs 'common'
+ 3. Disease card > mechanism chip 'Evidence' => Reactome pathway with the gene it was reached through
+ 4. Patient group 'Evidence' => 'serves' edge, source = curated list or ClinicalTrials.gov sponsor
+ 5. Patient group link => opens the verified organisation website in a new tab
+ 6. Similar disease 'Why linked?' => inferred (dotted) edge, breakdown of symptom/pathway/literature components
+ 7. Inspector > 'How the confidence is made up' => reliability, recency, corroboration bonus, penalty, formula
+ 8. Inspector > evidence tally => 'N supporting - N contradicting - N caveats' and stance chip
+ 9. Inspector stance chip for a curated gene-disease edge => 'Supported'
+10. Inspector stance chip for most computed similar_to edges => 'Weak' or 'Mixed' (confidence < 0.5)
+11. Inspector > supporting papers => PMIDs link to PubMed with title and year
+12. Inspector > 'Technical explanation' expander => source id, relationship, raw detail
+13. Inspector close (x) => panel returns to the 'Press Evidence' prompt, page position kept
+14. Edge for a terminated trial (Assets > Evidence) => 'Possible counter-evidence (automated flag, not a verified finding)'
+15. Trial stopped for an efficacy/safety reason => higher counter-weight than an operational reason
+16. Trial stopped for lack of funding => labelled operational, stance stays 'Supported' with 1 caveat
+17. Gene-disease edge where Orphanet and HPO disagree => 'conflicting status' contradiction listed
+18. Gene-disease edge 'Not yet assessed' in Orphanet => caveat shown
+19. Paper edge for a retracted paper => contradiction weight 1.0
+20. Researcher 'authored' edge without ORCID => caveat 'identity by name + initial + country; homonyms possible'
+21. Grant 'funds' edge => matched_by text (e.g. disease name in title / abstract / concept terms) and fiscal years
+22. Variant edge => ClinVar VariationID link, review status, number of submitters
+23. Plan citation chip [1] => opens the same inspector as the evidence button
+24. Plan citation chips: all [n] in the narrative resolve (none show 'unknown edge')
+25. Inspector 'plain sentence' callout => one to three plain sentences, mentions contradicting papers when present
+26. Inspector for an inferred edge with 0 co-mention papers => note 'rests on ontology annotations only'
+27. Inspector for below-threshold cross-family link => note that it is below the main threshold
+28. Inspector for HPO 'explicitly absent' conflict => note names the disease where the symptom is marked absent
+29. Inspector for 'single text-mining hit' paper link => caveat 'not confirmed by MeSH indexing'
+30. Evidence legend (always visible) => solid = database record, dashed = found in papers, dotted = inferred
+31. Legend line styles match the map edge styles exactly
+32. Evidence-type percentages on Home add up to ~100% (curated/extracted/inferred)
+33. Open inspector, switch page, come back => no stale or wrong edge shown
+34. Open two different edges one after another => panel content replaces, no duplication
+35. Inspector on phone width (390 px) => stacks below content, still readable
+36. Inspector in dark theme => text/bars readable (contrast), stance chip colours distinct
+37. Inspector in light theme => same checks
+38. Edge id with unknown value via URL/session => friendly error, no stack trace
+39. Inspector source link for ClinVar => opens ClinVar variation page
+40. Inspector source link for Orphanet => opens Orphanet disease page
+41. Inspector source link for HPO => opens HPO term page
+42. Inspector source link for Reactome => opens Reactome pathway page
+43. Inspector source link for NIH RePORTER => opens project details
+44. Inspector source link for ClinicalTrials.gov => opens the NCT page
+45. Confidence bar width matches the percentage printed
+46. Raw confidence vs recomputed overall => inferred/extracted show recomputed; curated keep the source value
+47. Contradicting item weight < 0.45 => counted as caveat, not contradiction
+48. Contradicting item weight >= 0.45 => counted in 'contradicting' and moves stance toward 'Mixed'
+49. Edge with no supporting papers => 'No paper attached; this link rests on the database record'
+50. Every edge reachable from the map via the 'inspect any link' dropdown
+
+====================================================================================================
+11. ASK THE LITERATURE (natural-language questions over 26,026 PubMed abstracts)
+====================================================================================================
+HOW TO TEST: Ask page, type the question (Ctrl+Enter or Ask). Expected = intended behaviour; log any deviation. Check: streamed draft is replaced by the verified answer, every sentence has a [n], the Sources expanders open abstracts with PubMed links, refusals are worded (not errors).
+
+ 1. What treatments have been tried for Krabbe disease?  =>  cited answer: HSCT, gene therapy trials
+ 2. Is hematopoietic stem cell transplantation used for X-linked adrenoleukodystrophy?  =>  yes, cited
+ 3. Which biomarkers track Fabry disease progression?  =>  lyso-Gb3 and others, cited
+ 4. Does miglustat help Niemann-Pick type C?  =>  stabilises neurological disease, cited
+ 5. What is enzyme replacement therapy for Gaucher disease?  =>  cited
+ 6. Is enzyme replacement therapy effective in Pompe disease?  =>  cited
+ 7. Does stem cell transplantation help children with Krabbe disease?  =>  cited, mentions early transplant
+ 8. What is newborn screening for Krabbe disease?  =>  cited
+ 9. Is newborn screening useful for X-ALD?  =>  cited
+10. Which gene therapy approaches exist for metachromatic leukodystrophy?  =>  cited, lentiviral HSC
+11. What causes Tay-Sachs disease?  =>  HEXA deficiency, cited
+12. What is the inheritance pattern of Fabry disease?  =>  X-linked, cited
+13. How is Hunter syndrome treated?  =>  idursulfase ERT, cited
+14. What is the blood-brain barrier problem for treating lysosomal diseases?  =>  cited
+15. What is substrate reduction therapy?  =>  cited
+16. Can chaperone therapy treat Fabry disease?  =>  migalastat, cited
+17. What are the symptoms of Zellweger spectrum disorders?  =>  cited
+18. How is Refsum disease managed?  =>  dietary phytanic acid restriction, cited
+19. What is cerebrotendinous xanthomatosis and how is it treated?  =>  chenodeoxycholic acid, cited
+20. What is the role of VLCFA in adrenoleukodystrophy?  =>  very long chain fatty acids accumulate, cited
+21. What is Lorenzo's oil?  =>  cited, mixed evidence
+22. Which lysosomal diseases are treated with hematopoietic stem cell transplantation?  =>  MPS I, Krabbe, MLD, cited
+23. What is the prevalence of Gaucher disease?  =>  cited or refused if not stated
+24. What are the neurological manifestations of Gaucher disease?  =>  type 2/3, cited
+25. What clinical trials exist for cystinosis treatment?  =>  cysteamine, cited
+26. What is the role of the PSAP gene in Krabbe-like disease?  =>  saposin A deficiency, cited
+27. What do Krabbe disease and metachromatic leukodystrophy have in common?  =>  both leukodystrophies, cited
+28. my son has Krabbe, what can we do  =>  cited, plain, or honest refusal
+29. is there a cure for Batten disease  =>  cited; no overclaiming
+30. what is a lysosome and why does it matter in these diseases  =>  cited or refused; no invented facts
+31. can adults get Krabbe disease  =>  adult-onset form, cited
+32. do kids with Hunter syndrome go to school  =>  cautious answer; check for overclaiming from one case
+33. [filter: Krabbe disease] What treatments have been tried?  =>  answers from Krabbe papers only
+34. [filter: Fabry disease] What are the main symptoms?  =>  answers from Fabry papers only
+35. [filter: Gaucher disease] Which therapies are approved?  =>  answers from Gaucher papers only
+36. [filter: metachromatic leukodystrophy] Is gene therapy available?  =>  cited
+37. [filter: Pompe/glycogen storage disease II] When should ERT start?  =>  cited
+38. What is the cost of enzyme replacement therapy in Nigeria?  =>  REFUSE: not supported by the abstracts
+39. Which hospital in Buffalo has an appointment slot for Fabry disease tomorrow?  =>  REFUSE
+40. What will the FDA decide about the next Krabbe gene therapy next year?  =>  REFUSE: future/unknown
+41. What is the exact survival rate of Tay-Sachs patients in 2040?  =>  REFUSE
+42. Does homeopathy cure Gaucher disease?  =>  REFUSE or cautious 'no evidence in sources'
+43. Who is the best doctor for Pompe disease in Texas?  =>  REFUSE: no endorsements
+44. What is the best pizza in New York?  =>  REFUSE: not related to the indexed rare-disease literature
+45. Write me a poem about the ocean  =>  REFUSE (off-topic)
+46. Who won the football world cup in 2018?  =>  REFUSE (off-topic)
+47. How do I reset my router?  =>  REFUSE (off-topic)
+48. What is 25 times 17?  =>  REFUSE (off-topic)
+49. Tell me a joke  =>  REFUSE (off-topic)
+50. What is the capital of France?  =>  REFUSE (off-topic)
+
+====================================================================================================
+12. UI, THEME, NAVIGATION AND UX
+====================================================================================================
+HOW TO TEST: Open the app (./start, http://localhost:8501) and check each item.
+
+ 1. Home loads in < 6 s on first visit; stat cards show 274 diseases, 439 genes, 2,835 symptoms, 1,180 mechanisms, 26,026 papers, ~1,224 studies
+ 2. Home hero + search box visible without scrolling at 1280x800
+ 3. Home 'Try' pills (Krabbe disease, globoid cell leukodystrophy, ABCD1, ...) each run the search
+ 4. Enter in the Home search box submits
+ 5. Home 'Guided demo: Krabbe disease to X-ALD' starts the tour and opens Explore on Krabbe
+ 6. Tour banner step 1 'Next: the plan' opens the plan with Krabbe and adrenoleukodystrophy preselected
+ 7. Persona card 'I lead a patient group' => Action plan page
+ 8. Persona card 'We were just diagnosed' => Explore with patient groups first
+ 9. Persona card 'I'm a researcher or scout' => Explore, mechanism-first entry
+10. Top navigation: Home, Explore, Action plan, Ask the literature, How it works all open without error
+11. Breadcrumb 'Atlas > page > disease' updates when the disease changes
+12. 'Current disease' chip persists across pages after choosing a disease
+13. Theme toggle Auto/Light/Dark: Light turns the whole app light (widgets included)
+14. Theme toggle Dark turns the whole app dark (selects, inputs, buttons, expanders)
+15. Theme Auto follows the operating-system colour scheme
+16. Theme choice survives navigation between pages in one session
+17. Theme choice resets to Auto after a full browser reload (documented limit)
+18. Light theme: body text, chips, and badges are readable (no pale-on-pale)
+19. Dark theme: map canvas background follows the theme (not white)
+20. Dark theme: map labels and edges remain visible
+21. Node types are distinguishable by SHAPE as well as colour (disease circle, gene diamond, symptom triangle, ...)
+22. Evidence types distinguishable by line style (solid/dashed/dotted), not only colour
+23. Explore selectors (search box, 'Look for', picker) are in the main panel above results, not the sidebar
+24. Explore 'Not what you meant?' picker changes the disease and refreshes the card
+25. Explore 'Look for' filter: Genes only returns genes; Symptoms only returns symptoms
+26. Explore starting from a gene (GALC) lists the diseases linked to it
+27. Explore starting from a symptom lists diseases with that symptom
+28. Explore starting from a mechanism lists diseases through its genes
+29. View switch: Similar diseases / Map / Funding / Variants / Collaborators / Assets all render
+30. 'Common symptoms (N)' expander is collapsed by default and opens
+31. 'Show technical detail' expander shows IDs and cross-references
+32. Glossary hover (underlined dotted term) shows a plain definition and does not break the layout
+33. Spinner or skeleton text appears for slow calls (search first call ~2.5 s, plan, explain, ask)
+34. Empty state: search with no results shows a helpful message, not a blank page
+35. Empty state: disease with no genes/papers shows a gap explanation and the closest related patient groups
+36. Error state: stop the LLM server (./stop then start with --no-llm): Ask shows 'language model not available'; plain explanation falls back to template
+37. Ask page: Ctrl+Enter submits; Enter adds a newline in the multi-line box
+38. Ask page: example question buttons fill and run the question
+39. Ask page: 'Only use papers about' filter lists diseases and can be reset to All diseases
+40. Ask page: sources expander shows title, year, journal, snippet and a PubMed link
+41. Action plan: 'Copy proposal' puts the plain-text proposal on the clipboard; 'Download' saves a .txt
+42. Action plan page layout at 1280 px: no horizontal scroll, inspector beside the narrative
+43. Phone width 390 px: pages usable; navigation reachable via the sidebar chevron
+44. 'How it works' page: pipeline steps, how to read the screens, sources with retrieved dates, limits
+45. Keyboard: Tab order reaches search box, buttons, expanders; focus ring visible
+46. Browser console on every page: no red errors (a few asset 404s from the graph component are known and harmless)
+47. No 'Demo data' badge appears with real data (it must appear only in ATLAS_FAKE=1 mode)
+48. ATLAS_FAKE=1 .venv/bin/streamlit run app/streamlit_app.py => every page shows the 'Demo data' badge
+49. ./start launches UI on :8501 and model server on :8080; ./stop frees both ports
+50. Closing the terminal running ./start stops both services (no orphans: ./stop --status)
