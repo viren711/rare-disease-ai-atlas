@@ -1,0 +1,20 @@
+# Starts the Rare Disease Atlas (app + watchdog + Cloudflare tunnel) in tmux at boot.
+# Install:  sudo cp deploy/global-ai.service /etc/systemd/system/ && sudo systemctl daemon-reload \
+#           && sudo systemctl enable global-ai.service
+[Unit]
+Description=Rare Disease Atlas (tmux session global_ai: app, watchdog, Cloudflare tunnel)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=viren
+Group=viren
+WorkingDirectory=/home/viren/Documents/hackathons/global_ai
+Environment=HOME=/home/viren
+ExecStart=/home/viren/Documents/hackathons/global_ai/scripts/tmux_up.sh
+ExecStop=/usr/bin/tmux kill-session -t global_ai
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
