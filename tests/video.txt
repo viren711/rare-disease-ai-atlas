@@ -1,53 +1,77 @@
-PRODUCT VIDEO PROMPT: RARE DISEASE ATLAS
-=========================================
-Make a 1-minute explainer video. It covers only the problem, the solution and the technology. It does not include a product demo.
+PRODUCT VIDEO PROMPT: RARE DISEASE ATLAS (PROBLEM, SOLUTION AND TECHNOLOGY)
+==========================================================================
+Make an explainer video about the problem, the solution, how it is built and what it can do. It does not include a product
+demo (there is a separate demo video). The narration is written in paragraphs, one per scene. It is about 708 words, which is about 4 to 5
+minutes at a calm reading pace. For a shorter cut, keep scenes 1, 3, 4, 6 and 10.
+
 Style: simple, calm, clean motion graphics on a dark teal and warm white background. Voice-over with burned-in captions.
 Do not show real patients or faces. Use only the on-screen text written below.
 
 SCENE 1: The problem
 --------------------
-Show: a family looking at a diagnosis, then the numbers below appearing one by one.
-Text: "10,000 rare diseases", "80% are genetic", "350 million people", "Fewer than 5% have an approved treatment"
-Say: "A child is diagnosed with a rare disease. The family learns the name of a gene, and nothing about what to do next.
-There are about ten thousand rare diseases, and fewer than five percent have an approved treatment."
+A child is diagnosed with a rare disease. The family is given the name of a gene, and little else about what to do next. There are about ten thousand rare diseases, they affect roughly three hundred and fifty million people, and fewer than five percent have an approved treatment. Often the parents become the organisers of a research effort they never expected to lead.
+
+10,000 rare diseases | 80% are genetic | 350 million people | Fewer than 5% have an approved treatment
+
 
 SCENE 2: Why it is hard
 -----------------------
-Show: papers, trials, grants, gene databases and patient groups as separate, unconnected icons.
-Text: "Knowledge is scattered", "Diseases are filed by name, not by mechanism", "Groups rebuild what already exists"
-Say: "The knowledge exists, but it is spread across papers, trials, grants, databases and patient groups. Diseases are filed
-by name, so two diseases that share a mechanism look unrelated, and communities end up rebuilding registries and studies that
-another group already has."
+The knowledge they need exists, but it is spread across disease databases, papers, trial registries, grant databases and patient organisation websites, and none of these talk to each other. Diseases are filed by name, so two diseases that share a pathway or a pattern of symptoms look unrelated. Communities end up spending years building a registry or study design that another group already has.
+
+Knowledge is scattered | Diseases are filed by name, not by mechanism | Groups rebuild what already exists
+
 
 SCENE 3: The solution
 ---------------------
-Show: the separate icons connecting into one graph, then the project name.
-Text: "Rare Disease Atlas", "A knowledge graph of rare diseases with the evidence behind every link"
-Say: "The Rare Disease Atlas brings these sources into one knowledge graph. It links diseases by shared mechanism and
-symptoms, shows the source and confidence of every connection, and turns a connection into a next step: a shared study, a
-researcher, a patient group. When there is no supported link, it says so."
+The Rare Disease Atlas brings these sources into one knowledge graph that links diseases by shared mechanism and symptoms instead of by name. Every connection records its source, date and confidence, and is labelled as a database record, something found in papers, or something the atlas computed. From a connection it produces a next step. When no supported link exists, it says so and names the next question to ask.
 
-SCENE 4: What it provides
--------------------------
-Show: four short labels appearing in turn.
-Text: "Related diseases", "Research assets", "Collaborators", "Next steps and plain-language explanations"
-Say: "For any disease it finds related diseases, existing trials and registries, funding, researchers and patient groups, and
-explains the result in plain language, with every statement cited."
+Rare Disease Atlas | A knowledge graph of rare diseases with the evidence behind every link
 
-SCENE 5: The technology
------------------------
-Show: a simple left-to-right diagram: sources, graph, local model, app. Under it, a short list of the technologies.
-Text: "10 public sources: MONDO, HPO, Orphanet, Reactome, ClinVar, PubMed, PubTator, ClinicalTrials.gov, NIH RePORTER",
-"60,869 nodes, 207,211 edges", "Parquet and NetworkX", "Embeddings, BM25, FAISS, cross-encoder reranker",
-"Qwen2.5-3B on llama.cpp", "Streamlit", "Runs on a laptop CPU, offline"
-Say: "It is built from ten public sources into a graph of about sixty thousand nodes and two hundred thousand edges. Each edge
-is marked as a database record, found in papers, or computed by the atlas. Questions are answered with search and a local
-language model, and every answer is checked against its sources. It runs entirely on a laptop, with no GPU and no cloud."
 
-SCENE 6: Close
---------------
-Show: the logo on a plain background.
-Text: "From an isolated diagnosis to a shared path toward treatment."
-Say: "From an isolated diagnosis, to a shared path toward treatment."
+SCENE 4: How the data is built
+------------------------------
+The graph is built from ten public sources: MONDO, the Human Phenotype Ontology, Orphanet and Reactome for diseases, symptoms, genes and pathways; ClinVar for variants; twenty-six thousand PubMed abstracts with PubTator3 annotations; thirteen hundred ClinicalTrials.gov studies; about eighteen hundred NIH grants; and a hand-checked list of patient organisations. Names and synonyms are resolved to one stable identifier. The result is about sixty-one thousand nodes of ten types and over two hundred thousand edges, stored as Parquet tables and loaded into memory with NetworkX, so no graph database is needed.
 
-MUSIC: soft, minimal, no vocals, quiet under the voice.
+MONDO, HPO, Orphanet, Reactome, ClinVar | PubMed, PubTator3, ClinicalTrials.gov, NIH RePORTER, patient organisations | One stable ID per disease, gene, symptom, pathway | 60,869 nodes, 207,211 edges
+
+
+SCENE 5: How diseases are linked
+--------------------------------
+Related diseases are found from mechanism, not name. For each pair, the atlas combines symptom overlap, weighted by how rare each symptom is, with shared Reactome pathways among the diseases' genes and the number of papers that mention both. Louvain clustering then groups the diseases, so a lysosomal and a peroxisomal disease can appear as neighbours. Links below the main threshold are kept but marked weak.
+
+Rare shared symptoms count more | Shared pathway | Papers that mention both | Database record, found in papers, computed
+
+
+SCENE 6: Trust and contradictions
+---------------------------------
+Every edge can be inspected. It shows its source and date, and a confidence score built from source reliability, recency, how many independent sources agree, and a penalty for contradictions. Each link gets a stance: supported, mixed, weak or unsupported. Possible counter-evidence includes stopped trials weighted by their stated reason, retracted or negative papers, and disagreements between databases. These are automated flags, worded as possible counter-evidence, never as findings.
+
+Source, date, confidence | Supported, mixed, weak, unsupported | Possible counter-evidence | Automated flags, not verified findings
+
+
+SCENE 7: From a link to an action
+---------------------------------
+For any pair of diseases, the action plan follows the chain of evidence and rates its readiness. It lists shared trials, registries and natural history studies, researchers and patient groups working on both, NIH funding and funding gaps, and what differs between the diseases and must be checked. It proposes next steps, each linked to its evidence, plus a proposal text that can be copied. If there is no supported route, it becomes a gap report of what was searched and what is missing.
+
+Readiness: strong, moderate, weak or none | Shared studies and registries | Researchers and patient groups | What differs | Proposal to send
+
+
+SCENE 8: Plain language and questions
+-------------------------------------
+The plan can be explained in plain language by a local Qwen 2.5 three-billion model running on llama.cpp. It rewrites one numbered fact at a time, the code attaches the citations, and any line that adds a number or name not in the fact is rejected. For free-text questions, the atlas searches the abstracts with embeddings and keywords combined, reranks the best candidates, and refuses when the evidence is too weak. Otherwise the model answers under a strict citation rule, and unsupported sentences are dropped.
+
+Short answer, What is uncertain, Who can help, This week | Hybrid search: embeddings and keywords | Refuses when evidence is weak
+
+
+SCENE 9: Architecture and results
+---------------------------------
+The graph engine, the question pipeline and the Streamlit interface are separate layers connected by one API. Everything runs on a laptop with no GPU, no cloud and no API keys, and a disease card with its neighbours returns in under a tenth of a second. On a test set, the search found the right abstract in the top five for every precise question, and all off-topic and unanswerable questions were refused. The limits are stated openly: researchers without an identifier are matched by name, counter-evidence flags are heuristics, funding gaps cover the NIH only, and every lead is for experts to check, not medical advice.
+
+Parquet and NetworkX | One API between engine and app | Streamlit with light and dark themes | Runs on a laptop CPU, offline
+
+
+SCENE 10: Close
+---------------
+From an isolated diagnosis, to a shared path toward treatment.
+
+From an isolated diagnosis to a shared path toward treatment.

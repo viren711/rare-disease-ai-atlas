@@ -1,0 +1,96 @@
+RARE DISEASE AI ATLAS: PRESENTATION TRANSCRIPT (10 slides)
+==========================================================
+Slides: demo/slides.pdf (or open demo/slides/slides.html in a browser).
+Length: about 6 minutes at a calm pace (about 900 words). Speakers rotate: Viren (1-3), Ninad (4-6), Mayukh (7-9), Viren (10).
+
+
+SLIDE 1: Title (Viren, ~25 s)
+-----------------------------
+Good morning. We are Team Arjun from IIT Bombay: I'm Viren, with Ninad and Mayukh. Our project for Challenge 05 is the
+Rare Disease AI Atlas. In one line: it finds the dots nobody connected. It takes a patient group from a single diagnosis to
+related diseases, the research that already exists, the people working on it, and a next step, with the evidence behind
+every link.
+
+
+SLIDE 2: The problem (Viren, ~40 s)
+-----------------------------------
+There are about ten thousand rare diseases. Around eighty percent are genetic, more than three hundred million people live
+with one, and fewer than five percent have an approved treatment. Three things make progress slow. The knowledge is
+scattered across databases, papers, trial registries, grants and patient groups. Diseases are filed by name, so two
+diseases that share a pathway look unrelated. And communities rebuild registries and studies that another group already
+has. As Maria, the patient leader in the brief, puts it: her family may be alone with this diagnosis, but a pathway could
+connect them to another community.
+
+
+SLIDE 3: The solution (Viren, ~40 s)
+------------------------------------
+Our answer is one knowledge graph, organised by mechanism and symptoms instead of names, that always ends in an action.
+It answers the brief's three questions: who shares our disease characteristics, what useful work already exists, and what
+we should do together next. Every link carries its evidence: its source, date, confidence and a stance, from supported to
+unsupported. Database records, findings from papers and links the atlas computed are drawn differently, so a hypothesis is
+never mistaken for a fact. And when nothing is supported, the atlas says so and tells you what to ask next.
+
+
+SLIDE 4: Dataset (Ninad, ~35 s)
+-------------------------------
+The graph is built from ten public sources. MONDO gives stable disease identifiers. The Human Phenotype Ontology gives
+symptoms, and across almost thirteen thousand diseases it tells us how rare each symptom is. Orphanet adds genes and
+prevalence, Reactome adds biological pathways, and ClinVar adds variants. For research we use twenty-six thousand PubMed
+abstracts with PubTator annotations, thirteen hundred studies from ClinicalTrials.gov and about eighteen hundred NIH grants.
+Our demo slice is lysosomal and peroxisomal diseases, two families that leukodystrophy bridges.
+
+
+SLIDE 5: Preprocessing (Ninad, ~45 s)
+-------------------------------------
+The pipeline has six steps. We download everything in parallel, with resumable, rate-limited scripts. We resolve names, so
+OMIM, Orphanet and MeSH identifiers and every synonym map to one node. We connect them into typed edges, and each edge
+stores its source, date, confidence and evidence type. We score disease similarity: rare shared symptoms count for half,
+shared pathways for thirty percent and co-mentioning papers for twenty, and Louvain clustering groups the diseases. We
+attach a confidence score and flag possible counter-evidence. Finally we index every abstract for search. The result is
+about sixty-one thousand nodes and two hundred and seven thousand edges, rebuilt in thirty-five seconds, with no language
+model needed to build it.
+
+
+SLIDE 6: Architecture (Ninad, ~30 s)
+------------------------------------
+The system has four layers. The data layer is plain Parquet tables and a search index. The atlas engine loads the graph into
+memory with NetworkX and handles neighbours, evidence, synonyms, action plans and plain-language explanations. The
+literature layer retrieves, reranks, checks grounding and verifies citations. Everything meets at one contract, api.py,
+which is the only thing the interface talks to. That separation lets us test each layer on its own.
+
+
+SLIDE 7: Tech stack (Mayukh, ~35 s)
+-----------------------------------
+The whole stack is open source and runs on a CPU with no API keys. Data and graph work use Python, pandas, Parquet,
+NetworkX and scikit-learn. Search uses bge-small embeddings with BM25, FAISS and a cross-encoder reranker. The language
+model is Qwen 2.5 three-billion, four-bit, on llama.cpp. The interface is Streamlit. Running locally keeps it private and free,
+and because the model client uses the OpenAI-compatible API, a hosted model can be plugged in with one setting. We did not
+train or fine-tune any model.
+
+
+SLIDE 8: User interface (Mayukh, ~35 s)
+---------------------------------------
+The interface follows one rule: summary first, evidence on click. Home has one search box, three entry points for different
+users, and a guided demo. Explore shows the disease card, similar diseases with the reason for each, an interactive map and
+an evidence panel beside every link. The action plan gives readiness, caveats, shared studies, people to contact and a
+proposal to send. Ask the literature answers in plain language with citations, or refuses clearly. There are light and dark
+themes, and node types differ by shape as well as colour.
+
+
+SLIDE 9: Deployment and tools (Mayukh, ~35 s)
+---------------------------------------------
+It runs on one laptop with six cores and no GPU. A single start command launches the model server and the app. It stays up
+inside a tmux session with automatic restarts and a health watchdog, and a Cloudflare tunnel makes it reachable over HTTPS
+without opening any ports. One script rebuilds the data, graph and index from public sources. For testing we used Streamlit's
+app tests, stubbed-model smoke tests and Playwright in a real browser, plus ffmpeg for the demo video, Git, and Claude Code
+as an AI coding assistant.
+
+
+SLIDE 10: Results and next steps (Viren, ~40 s)
+-----------------------------------------------
+We measured it. The search found the right abstract in the top five for every precise question, twenty-eight of thirty-two
+end-to-end answers were correct, every off-topic or unanswerable question was refused, and nine of ten plain-language
+rewrites passed our fact checks. We are open about the limits: researchers without an ORCID are matched by name,
+counter-evidence flags are heuristics, and funding coverage is NIH only. Next, we want more disease groups, evidence
+contributed by patient groups, and a shared natural history study as our first ten-times milestone. From an isolated
+diagnosis to a shared path toward treatment. Thank you.

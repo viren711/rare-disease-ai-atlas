@@ -1,0 +1,62 @@
+1
+00:00:00,150 --> 00:00:01,976
+This is the Rare Disease Atlas.
+
+2
+00:00:02,026 --> 00:00:04,397
+Start from any disease, gene or symptom.
+
+3
+00:00:04,447 --> 00:00:05,850
+Here I search a disease.
+
+4
+00:00:06,150 --> 00:00:11,850
+It resolves the name to Krabbe disease, with its genes, mechanism, rare
+symptoms, prevalence and patient groups.
+
+5
+00:00:12,150 --> 00:00:15,692
+A different disease family brings up adrenoleukodystrophy.
+
+6
+00:00:15,742 --> 00:00:18,850
+The evidence panel shows the source and confidence.
+
+7
+00:00:19,150 --> 00:00:23,967
+The map shows its neighbourhood, with line styles for records, papers
+and computed links.
+
+8
+00:00:24,017 --> 00:00:27,850
+Tabs list NIH funding, researchers, and existing trials and registries.
+
+9
+00:00:28,150 --> 00:00:32,414
+The action plan rates this pair a supported lead with moderate
+readiness.
+
+10
+00:00:32,464 --> 00:00:37,850
+It lists caveats like stopped trials and no shared gene, plus studies
+and people to contact.
+
+11
+00:00:38,150 --> 00:00:41,850
+Explain simply gives the result in plain language, with every sentence
+cited.
+
+12
+00:00:42,150 --> 00:00:44,999
+Ask the literature answers from PubMed abstracts.
+
+13
+00:00:45,049 --> 00:00:49,850
+Each source is listed so it can be checked, and unsupported questions
+are refused.
+
+14
+00:00:50,150 --> 00:00:57,850
+A second example: these two diseases share a bile acid pathway, so
+readiness is strong, with a registry and study to reuse.

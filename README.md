@@ -396,6 +396,22 @@ bash scripts/run_all.sh
 Optional settings go in `.env` (see `.env.example`): `LLM_BASE_URL`, `LLM_MODEL`, `LLM_API_KEY`, `INDEX_DIR`.
 Tunable thresholds and weights live in `config/atlas.yaml`.
 
+### Run it permanently (always on)
+
+```bash
+tmux new-session -d -s global_ai -n app   'while true; do ./start; sleep 5; done'   # restarts ./start if it exits
+tmux new-window  -t global_ai    -n watch 'bash scripts/keepalive.sh'               # restarts it if the UI or model hangs
+tmux attach -t global_ai                                                            # look at it (detach: Ctrl+b then d)
+```
+
+`scripts/keepalive.sh` checks the UI and model-server health every 30 s and restarts everything after two failed
+checks. To stop for good: `tmux kill-session -t global_ai && ./stop`. A tmux session does not survive a reboot; add
+`@reboot cd /path/to/rare-disease-ai-atlas && tmux new-session -d -s global_ai ...` to `crontab -e` if that matters.
+
+To share it on the internet, use a Cloudflare tunnel: `cloudflared tunnel --url http://localhost:8501 --protocol http2`
+gives a temporary public address that changes whenever the tunnel restarts. For a fixed address, create a named tunnel
+on a domain you control (`cloudflared tunnel login`, `tunnel create`, `tunnel route dns`, `tunnel run`).
+
 ## 10. Reproduce the dataset
 
 `bash scripts/run_all.sh` runs everything below: the downloads in parallel lanes, then the graph and the index.

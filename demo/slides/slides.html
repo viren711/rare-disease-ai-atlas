@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rare Disease AI Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* Palette = the app's light theme (app/theme.py) */
+  :root {
+    --bg: #FFFCF7; --surface: #F7F2EA; --surface2: #EFE8DC; --border: #D9CFBF;
+    --text: #16282B; --muted: #4F6064; --accent: #0F766E; --accent-soft: #D5EEEA;
+    --disease: #0B5FA5; --gene: #B04A85; --symptom: #A06400; --pathway: #00785A;
+    --trial: #C24E00; --org: #6B4FB3; --researcher: #13789A; --paper: #6B7280;
+    --inferred: #8A5A9E; --warn: #9A5B00; --warn-bg: #FBEDD3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #E9E3D8; font-family: "Source Sans 3", "Source Sans Pro", system-ui, sans-serif; color: var(--text); }
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 28px 0; }
+  .slide {
+    width: 1280px; height: 720px; background: var(--bg); position: relative; overflow: hidden;
+    padding: 64px 80px 56px; display: flex; flex-direction: column;
+    box-shadow: 0 2px 18px rgba(22, 40, 43, .12); border-radius: 6px;
+  }
+  .eyebrow { color: var(--accent); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 15px; }
+  h1 { font-size: 64px; line-height: 1.05; font-weight: 800; letter-spacing: -.01em; }
+  h2 { font-size: 40px; line-height: 1.12; font-weight: 700; margin: 8px 0 28px; letter-spacing: -.005em; }
+  p.lead { font-size: 22px; line-height: 1.45; color: var(--muted); max-width: 900px; }
+  .foot { position: absolute; left: 80px; right: 80px; bottom: 22px; display: flex; justify-content: space-between;
+          font-size: 13px; color: var(--muted); letter-spacing: .02em; }
+  .foot b { color: var(--accent); font-weight: 700; }
+  .rule { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: var(--accent); }
+  .grid { display: grid; gap: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 26px; }
+  .card h3 { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+  .card p, .card li { font-size: 20px; line-height: 1.45; color: var(--muted); }
+  .card ul { padding-left: 20px; } .card li { margin-bottom: 4px; }
+  .stat .n { font-size: 62px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .stat .l { font-size: 19px; color: var(--muted); margin-top: 8px; line-height: 1.3; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px; border-radius: 999px; font-size: 14px;
+          border: 1px solid var(--border); background: var(--bg); color: var(--text); font-weight: 600; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  table { border-collapse: collapse; width: 100%; font-size: 19px; }
+  th { text-align: left; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+       font-weight: 700; padding: 0 12px 8px; border-bottom: 2px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--surface2); vertical-align: top; line-height: 1.3; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+  td.num { color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .flow { display: flex; align-items: stretch; gap: 10px; }
+  .flow .step { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 16px; min-height: 250px; }
+  .flow .step .k { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; }
+  .flow .step h4 { font-size: 21px; margin: 6px 0 8px; }
+  .flow .step p { font-size: 16px; color: var(--muted); line-height: 1.42; }
+  .arrow { align-self: center; color: var(--accent); font-size: 22px; font-weight: 700; }
+  .layer { border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; background: var(--surface);
+           display: flex; align-items: center; gap: 18px; }
+  .layer .name { width: 200px; font-weight: 700; font-size: 19px; flex-shrink: 0; }
+  .layer .boxes { display: flex; gap: 10px; flex-wrap: wrap; flex: 1; }
+  .box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 13px; font-size: 16.5px; }
+  .box code, code { font-family: "Source Code Pro", monospace; font-size: .9em; color: var(--accent); }
+  .down { text-align: center; color: var(--accent); font-size: 20px; line-height: 1; margin: 6px 0; font-weight: 700; }
+  .shot { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #fff; }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .cap { font-size: 16px; color: var(--muted); margin-top: 6px; }
+  .quote { font-size: 26px; line-height: 1.45; border-left: 4px solid var(--accent); padding: 6px 0 6px 20px; color: var(--text); }
+  .tag { font-size: 15px; color: var(--accent); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .muted { color: var(--muted); }
+  .arch .layer { padding: 11px 20px; } .arch .down { margin: 3px 0; font-size: 17px; } .arch h2 { margin-bottom: 14px !important; }
+  @page { size: 1280px 720px; margin: 0; }
+  @media print {
+    html, body { background: var(--bg); }
+    .deck { padding: 0; gap: 0; }
+    .slide { box-shadow: none; border-radius: 0; page-break-after: always; break-after: page; }
+  }
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 1 TITLE -->
+<section class="slide" style="justify-content:center; padding-left:110px;">
+  <div class="rule"></div>
+  <div class="eyebrow">Challenge 05 · OpenAI × Buffalo Initiative × Hack-Nation</div>
+  <h1 style="margin:18px 0 18px;">Rare Disease<br>AI Atlas</h1>
+  <p class="lead" style="font-size:26px; color:var(--text);">Find the dots nobody connected.</p>
+  <p class="lead" style="margin-top:14px;">A knowledge graph that takes a patient group from one diagnosis to related diseases,
+    existing research, the people working on it, and a next step, with the evidence behind every link.</p>
+  <div style="margin-top:44px; display:flex; gap:12px; flex-wrap:wrap;">
+    <span class="chip">Team Arjun · IIT Bombay</span>
+    <span class="chip">Viren · Ninad · Mayukh</span>
+  </div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Team Arjun</span><span>1 / 10</span></div>
+</section>
+
+<!-- 2 PROBLEM -->
+<section class="slide">
+  <div class="eyebrow">The problem</div>
+  <h2>A diagnosis, a gene name, and no next step</h2>
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:30px;">
+    <div class="card stat"><div class="n">10,000</div><div class="l">known rare diseases</div></div>
+    <div class="card stat"><div class="n">80%</div><div class="l">are genetic</div></div>
+    <div class="card stat"><div class="n">300M+</div><div class="l">people affected worldwide</div></div>
+    <div class="card stat"><div class="n">&lt;5%</div><div class="l">have an approved treatment</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="card"><h3>Knowledge is scattered</h3><p>Disease databases, papers, trial registries, grants and patient groups do not talk to each other.</p></div>
+    <div class="card"><h3>Names hide mechanisms</h3><p>Diseases are filed by name, so two that share a pathway or symptom pattern look unrelated.</p></div>
+    <div class="card"><h3>Groups rebuild what exists</h3><p>Communities spend scarce years and money on registries and study designs another group already has.</p></div>
+  </div>
+  <div class="quote" style="margin-top:24px; font-size:22px;">“We may be the only family with this diagnosis, but this pathway connects us to another community…”
+    <div class="muted" style="font-size:15px; margin-top:4px;">Maria, patient-organisation leader (persona from the challenge brief)</div></div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Problem</span><span>2 / 10</span></div>
+</section>
+
+<!-- 3 SOLUTION -->
+<section class="slide">
+  <div class="eyebrow">The solution</div>
+  <h2>One graph, organised by mechanism and symptoms, that ends in an action</h2>
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:22px;">
+    <div class="card"><div class="tag">Who shares our characteristics?</div><p style="margin-top:8px;">Related diseases ranked by rare shared symptoms, shared pathways and papers that mention both, each with a “why”.</p></div>
+    <div class="card"><div class="tag">What already exists?</div><p style="margin-top:8px;">Trials, registries, natural-history studies, NIH grants and pathogenic variants, linked to their source.</p></div>
+    <div class="card"><div class="tag">What should we do next?</div><p style="margin-top:8px;">Researchers and patient groups on both diseases, what differs, a readiness level, next steps and a proposal to send.</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns: 1.15fr 1fr; align-items:start;">
+    <div class="card">
+      <h3>Every link carries its evidence</h3>
+      <p>Source, date, confidence and a stance: supported, mixed, weak or unsupported. Possible counter-evidence (stopped trials, retractions, disagreeing databases) sits beside the link.</p>
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="chip"><svg width="26" height="6"><line x1="0" y1="3" x2="26" y2="3" stroke="#2A3D41" stroke-width="2.5"/></svg>Database record</span>
+        <span class="chip"><svg width="26" height="6"><line x1="0" y1="3" x2="26" y2="3" stroke="#5C7075" stroke-width="2.5" stroke-dasharray="6 4"/></svg>Found in papers</span>
+        <span class="chip"><svg width="26" height="6"><line x1="0" y1="3" x2="26" y2="3" stroke="#8A5A9E" stroke-width="2.5" stroke-dasharray="2 4"/></svg>Inferred by the atlas</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Honest when there is no route</h3>
+      <p>If nothing is supported, the atlas says so, shows what it searched (with counts), what is missing, and the next question to ask.</p>
+    </div>
+  </div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Solution</span><span>3 / 10</span></div>
+</section>
+
+<!-- 4 DATASET -->
+<section class="slide">
+  <div class="eyebrow">Dataset</div>
+  <h2 style="margin-bottom:18px;">Ten public sources, two disease groups</h2>
+  <table>
+    <tr><th>Source</th><th>What it provides</th><th>Used</th></tr>
+    <tr><td>MONDO</td><td>Stable disease IDs, synonyms, hierarchy</td><td class="num">274 diseases</td></tr>
+    <tr><td>HPO</td><td>Symptoms per disease, and how rare each symptom is</td><td class="num">2,835 symptoms · 12,866 diseases for rarity</td></tr>
+    <tr><td>Orphanet</td><td>Gene–disease links, prevalence, onset, inheritance</td><td class="num">439 genes · 171 with epidemiology</td></tr>
+    <tr><td>Reactome</td><td>Biological pathways of each gene (the mechanism)</td><td class="num">1,180 pathways</td></tr>
+    <tr><td>ClinVar</td><td>Variants of the atlas genes</td><td class="num">85,989 records · 3,890 pathogenic</td></tr>
+    <tr><td>PubMed + PubTator3</td><td>Abstracts, authors, and the genes and diseases they mention</td><td class="num">26,026 abstracts</td></tr>
+    <tr><td>ClinicalTrials.gov</td><td>Trials, registries, natural-history studies, stop reasons</td><td class="num">1,303 studies</td></tr>
+    <tr><td>NIH RePORTER</td><td>Grants and principal investigators</td><td class="num">1,779 projects</td></tr>
+    <tr><td>Patient groups</td><td>Curated list, every website checked live</td><td class="num">31 verified</td></tr>
+  </table>
+  <p class="muted" style="font-size:16px; margin-top:16px;">Demo slice: <b style="color:var(--text)">lysosomal storage diseases (184)</b> and <b style="color:var(--text)">peroxisomal diseases (89)</b>, bridged by leukodystrophy.</p>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Dataset</span><span>4 / 10</span></div>
+</section>
+
+<!-- 5 PREPROCESSING -->
+<section class="slide">
+  <div class="eyebrow">Preprocessing and graph build</div>
+  <h2 style="margin-bottom:22px;">From raw downloads to an evidence-labelled graph</h2>
+  <div class="flow">
+    <div class="step"><div class="k">1 · Collect</div><h4>Download</h4><p>Parallel, resumable, rate-limited downloaders. Filtered to the atlas diseases and genes.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="k">2 · Resolve</div><h4>One ID per entity</h4><p>MONDO cross-references map OMIM, Orphanet and MeSH. Synonyms map to one node.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="k">3 · Connect</div><h4>Typed edges</h4><p>Each edge stores source, date, confidence and evidence type. Generic pathways removed.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="k">4 · Score</div><h4>Similarity</h4><p>Rarity-weighted symptoms 0.5 · shared pathway 0.3 · co-mention 0.2. Louvain clusters.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="k">5 · Trust</div><h4>Confidence</h4><p>Reliability × recency + corroboration − penalty. Counter-evidence flagged.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="k">6 · Index</div><h4>Search</h4><p>bge-small embeddings + BM25 over every abstract, for cited answers.</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-top:30px;">
+    <div class="card stat"><div class="n" style="font-size:42px;">60,869</div><div class="l">nodes, 10 types</div></div>
+    <div class="card stat"><div class="n" style="font-size:42px;">207,211</div><div class="l">edges, each with provenance</div></div>
+    <div class="card stat"><div class="n" style="font-size:42px;">~35 s</div><div class="l">deterministic graph rebuild</div></div>
+    <div class="card stat"><div class="n" style="font-size:42px;">No LLM</div><div class="l">needed to build the graph (PubTator tags papers)</div></div>
+  </div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Preprocessing</span><span>5 / 10</span></div>
+</section>
+
+<!-- 6 ARCHITECTURE -->
+<section class="slide arch">
+  <div class="eyebrow">Architecture</div>
+  <h2 style="margin-bottom:20px;">Four layers, one contract between engine and app</h2>
+  <div class="layer"><div class="name">Data</div><div class="boxes">
+    <span class="box"><code>nodes.parquet</code></span><span class="box"><code>edges.parquet</code> source · date · confidence · type</span>
+    <span class="box">FAISS + BM25 index</span><span class="box">config/atlas.yaml</span></div></div>
+  <div class="down">↓</div>
+  <div class="layer"><div class="name">Atlas engine<br><span class="muted" style="font-weight:400;font-size:14px;">NetworkX in memory</span></div><div class="boxes">
+    <span class="box">graph · neighbours · evidence</span><span class="box">resolve · synonyms</span>
+    <span class="box">actions · readiness · gap report</span><span class="box">explain · plain language</span></div></div>
+  <div class="down">↓</div>
+  <div class="layer"><div class="name">Literature Q&amp;A<br><span class="muted" style="font-weight:400;font-size:14px;">rag/</span></div><div class="boxes">
+    <span class="box">retrieve: embeddings + BM25</span><span class="box">rerank: cross-encoder</span>
+    <span class="box">grounding gate</span><span class="box">local LLM</span><span class="box">citation check</span></div></div>
+  <div class="down">↓</div>
+  <div class="layer" style="border-color:var(--accent); background:var(--accent-soft);"><div class="name"><code style="font-size:16px;">atlas/api.py</code></div><div class="boxes" style="color:var(--text); font-size:16px;">
+    search · disease_card · neighbours · subgraph · edge · action_plan · funding · variants · researchers_for · assets_for · ask</div></div>
+  <div class="down">↓</div>
+  <div class="layer"><div class="name">Interface</div><div class="boxes">
+    <span class="box">Streamlit app: Home · Explore · Action plan · Ask · How it works</span><span class="box">llama.cpp server (Qwen2.5-3B)</span></div></div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Architecture</span><span>6 / 10</span></div>
+</section>
+
+<!-- 7 TECH STACK -->
+<section class="slide">
+  <div class="eyebrow">Tech stack</div>
+  <h2>Open source, CPU only, no API keys</h2>
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="card"><h3>Data and graph</h3><ul><li>Python 3.12</li><li>pandas + Parquet (pyarrow)</li><li>NetworkX: paths, Louvain clustering</li><li>scikit-learn: TF-IDF rarity weighting, synonym search</li></ul></div>
+    <div class="card"><h3>Search and AI</h3><ul><li>BAAI bge-small-en-v1.5 embeddings</li><li>BM25 + FAISS, fused by rank</li><li>MiniLM cross-encoder reranker</li><li>Qwen2.5-3B (4-bit) on llama.cpp</li></ul></div>
+    <div class="card"><h3>Interface</h3><ul><li>Streamlit 1.63, multipage</li><li>streamlit-agraph (vis.js) graph map</li><li>Light, dark and auto themes</li><li>Colour-blind-safe: shapes and line styles, not colour alone</li></ul></div>
+  </div>
+  <div class="card" style="margin-top:20px; display:flex; gap:40px; align-items:center;">
+    <div><div class="tag">Why local</div><p style="margin-top:6px;">Private by default, free to run, reproducible. The LLM client speaks the OpenAI-compatible API, so a hosted model can be swapped in with one setting.</p></div>
+    <div style="flex-shrink:0;" class="stat"><div class="n" style="font-size:40px;">0</div><div class="l">models trained or fine-tuned</div></div>
+  </div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Tech stack</span><span>7 / 10</span></div>
+</section>
+
+<!-- 8 UI -->
+<section class="slide" style="padding-top:48px;">
+  <div class="eyebrow">User interface</div>
+  <h2 style="margin-bottom:16px;">Summary first, evidence on click</h2>
+  <div class="grid" style="grid-template-columns: 1fr 1fr; grid-template-rows: 250px 250px; gap:12px 26px;">
+    <div><div class="shot" style="height:218px;"><img src="assets/home-light.png" alt="Home page"></div><div class="cap"><b>Home</b>: one search box, three ways in, guided demo</div></div>
+    <div><div class="shot" style="height:218px;"><img src="assets/map.png" alt="Explore map with evidence panel"></div><div class="cap"><b>Explore</b>: disease card, similar diseases, map, evidence panel</div></div>
+    <div><div class="shot" style="height:218px;"><img src="assets/action-plan-light.png" alt="Action plan"></div><div class="cap"><b>Action plan</b>: readiness, caveats, shared studies, people, proposal</div></div>
+    <div><div class="shot" style="height:218px;"><img src="assets/ask.png" alt="Ask the literature answer"></div><div class="cap"><b>Ask the literature</b>: cited answers, or a clear refusal</div></div>
+  </div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Interface</span><span>8 / 10</span></div>
+</section>
+
+<!-- 9 DEPLOYMENT + TOOLS -->
+<section class="slide">
+  <div class="eyebrow">Deployment and tools</div>
+  <h2>Runs on one laptop, reachable from anywhere</h2>
+  <div class="grid" style="grid-template-columns: 1.1fr 1fr;">
+    <div class="card">
+      <h3>Deployment</h3>
+      <ul>
+        <li><b style="color:var(--text)">Hardware:</b> one CPU laptop (6 cores, no GPU, ~6 GB RAM)</li>
+        <li><b style="color:var(--text)"><code>./start</code></b> launches the model server and the app; <code>./stop</code> shuts both down</li>
+        <li><b style="color:var(--text)">Always on:</b> tmux session with auto-restart and a health watchdog</li>
+        <li><b style="color:var(--text)">Public access:</b> Cloudflare Tunnel gives an HTTPS link with no open ports</li>
+        <li><b style="color:var(--text)">Reproducible:</b> <code>run_all.sh</code> rebuilds data, graph and index from public sources</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tools used</h3>
+      <ul>
+        <li>Python, Streamlit, llama.cpp</li>
+        <li>Playwright: UI tests, screenshots, demo recording</li>
+        <li>Streamlit AppTest + stubbed-LLM smoke tests</li>
+        <li>ffmpeg: demo video editing and subtitles</li>
+        <li>Git and GitHub, tmux, cloudflared</li>
+        <li>Claude Code as an AI coding assistant</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px;">
+    <p><b style="color:var(--text)">Speed on the laptop:</b> disease card + neighbours &lt; 0.1 s · action plan ~0.1 s · graph loads in ~6 s · cited literature answer 10–50 s</p>
+  </div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Deployment</span><span>9 / 10</span></div>
+</section>
+
+<!-- 10 RESULTS + NEXT -->
+<section class="slide">
+  <div class="eyebrow">Results and next steps</div>
+  <h2>Measured, honest about limits, built to grow</h2>
+  <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:20px;">
+    <div class="card stat"><div class="n" style="font-size:44px;">100%</div><div class="l">right abstract in top 5, precise questions</div></div>
+    <div class="card stat"><div class="n" style="font-size:44px;">28/32</div><div class="l">end-to-end answers correct</div></div>
+    <div class="card stat"><div class="n" style="font-size:44px;">9/9</div><div class="l">off-topic and unanswerable questions refused</div></div>
+    <div class="card stat"><div class="n" style="font-size:44px;">9/10</div><div class="l">plain-language rewrites pass fact checks</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card"><h3>Known limits</h3><ul>
+      <li>Researchers without an ORCID matched by name</li>
+      <li>Counter-evidence flags are heuristics</li>
+      <li>Funding gaps cover the NIH only; two disease groups indexed</li></ul></div>
+    <div class="card"><h3>Next</h3><ul>
+      <li>More disease groups: one config entry each</li>
+      <li>Patient groups contribute missing evidence, reviewed before it counts</li>
+      <li>Shared natural-history studies as the first 10× milestone</li></ul></div>
+  </div>
+  <div class="quote" style="margin-top:22px;">From an isolated diagnosis to a shared path toward treatment.</div>
+  <div class="foot"><span><b>Rare Disease AI Atlas</b> · Thank you</span><span>10 / 10</span></div>
+</section>
+
+</main>
+</body>
+</html>

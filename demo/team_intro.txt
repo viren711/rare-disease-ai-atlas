@@ -1,0 +1,22 @@
+TEAM INTRO (1 minute)
+
+[0:00–0:05 | Viren]
+Hi, I'm Viren, a student at IIT Bombay. My current research interest lies in fairness and AI for healthcare.
+
+[0:05–0:10 | Ninad]
+I'm Ninad, a master's student at IIT Bombay, working on graph machine learning.
+
+[0:10–0:15 | Mayukh]
+And I'm Mayukh, a master's student at IIT Bombay, working on agentic AI.
+
+[0:15–0:25 | Viren]
+And togather we are team Arjun. We have worked on AI for healthcare, from medical imaging and disease analysis to large-scale data and graphs. That drew us to one of medicine's hardest problems: rare diseases.
+
+[0:25–0:36 | Viren]
+There are about ten thousand rare diseases, affecting over three hundred million people. Fewer than five percent have an approved treatment, and the knowledge needed to act is scattered and disconnected.
+
+[0:36–0:52 | Ninad]
+So we built the Rare Disease AI Atlas: a knowledge graph of over sixty thousand nodes from ten public sources. It links diseases, genes, symptoms, research, trials and patient groups, shows the source behind every link, and runs on a laptop.
+
+[0:52–1:00 | All]
+Our goal: help families, patient groups and researchers find the right evidence, and each other, faster, so more time goes toward treatment.

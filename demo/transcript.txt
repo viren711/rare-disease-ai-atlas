@@ -1,6 +1,6 @@
 RARE DISEASE ATLAS: DEMO VIDEO TRANSCRIPT (video.mp4, 60 seconds)
 ==================================================================
-Read at a steady pace, about 2.5 to 3 words per second. Times match the video. About 131 spoken words in total.
+Read at a steady pace, about 2.5 to 3 words per second. Times match the video. About 169 spoken words in total (a brisk pace, just under 3 words per second).
 
 0:00 - 0:06   HOME PAGE
 On screen:    The home page, then the search box being filled in.
@@ -8,7 +8,7 @@ Say:          "This is the Rare Disease Atlas. Start from any disease, gene or s
 
 0:06 - 0:12   DISEASE CARD
 On screen:    Krabbe disease card: genes, mechanism, rare symptoms, how common it is, patient groups.
-Say:          "It resolves the name to Krabbe disease, with its genes, mechanism, rare symptoms and prevalence."
+Say:          "It resolves the name to Krabbe disease, with its genes, mechanism, rare symptoms, prevalence and patient groups."
 
 0:12 - 0:19   RELATED DISEASES AND EVIDENCE
 On screen:    "Only diseases from a different family" is switched on. Adrenoleukodystrophy appears. The evidence
@@ -17,24 +17,24 @@ Say:          "A different disease family brings up adrenoleukodystrophy. The ev
 
 0:19 - 0:28   MAP, FUNDING, RESEARCHERS, STUDIES
 On screen:    The map, then the Funding, Collaborators and Assets tabs.
-Say:          "The map shows its neighbourhood. Tabs list NIH funding, researchers, and existing trials and registries."
+Say:          "The map shows its neighbourhood, with line styles for records, papers and computed links. Tabs list NIH funding, researchers, and existing trials and registries."
 
 0:28 - 0:38   ACTION PLAN
 On screen:    Action plan page, Krabbe disease against adrenoleukodystrophy. Banner, readiness badge, caveats,
               then the connection and the shared studies.
-Say:          "The action plan rates this pair a supported lead with moderate readiness, and lists caveats like stopped trials and no shared gene."
+Say:          "The action plan rates this pair a supported lead with moderate readiness. It lists caveats like stopped trials and no shared gene, plus studies and people to contact."
 
 0:38 - 0:42   EXPLAIN SIMPLY
 On screen:    The plain-language summary with numbered citations.
-Say:          "Explain simply gives the result in plain language, every sentence cited."
+Say:          "Explain simply gives the result in plain language, with every sentence cited."
 
 0:42 - 0:50   ASK THE LITERATURE
 On screen:    A question is typed, then the cited answer and its sources.
-Say:          "Ask the literature answers from PubMed abstracts, with each source listed."
+Say:          "Ask the literature answers from PubMed abstracts. Each source is listed so it can be checked, and unsupported questions are refused."
 
 0:50 - 0:58   SECOND EXAMPLE
 On screen:    Action plan for cerebrotendinous xanthomatosis against AMACR deficiency, readiness strong.
-Say:          "These two diseases share a bile acid pathway, so readiness is strong."
+Say:          "A second example: these two diseases share a bile acid pathway, so readiness is strong, with a registry and study to reuse."
 
 0:58 - 1:00   THEME
 On screen:    The theme switches to dark.
